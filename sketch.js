@@ -6,7 +6,7 @@ let index_hidden;
 let global_control = true;
 let deck_count = 52;
 let table_count = 0;
-
+let global_index = 0;
 let names = ['2_of_clubs.png','2_of_diamonds.png','2_of_hearts.png','2_of_spades.png',
 '3_of_clubs.png','3_of_diamonds.png','3_of_hearts.png','3_of_spades.png',
 '4_of_clubs.png','4_of_diamonds.png','4_of_hearts.png','4_of_spades.png',
@@ -100,18 +100,20 @@ function setup() {
 function draw() {
   // put drawing code here
   background(225);
-  index_hidden = 0;
-  cards.forEach(element => {
 
-    element.show();
+  cards[52].show();
 
-  });
+  if(global_index < 53){
+    cards[global_index].show();
+  }
 
   if(index>=0 && index<names.length){
+
     cards[index].move();
   }
 }
 
 function mousePressed(){
+    global_index = 0;
     cards[52].clicked();
 }
