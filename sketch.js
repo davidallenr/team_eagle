@@ -2,32 +2,37 @@ let card;
 let card_width = 100;
 let card_height = 145.2;
 let hidden_card = 52;
-let index_hidden;
 let global_control = true;
 let deck_count = 52;
 let table_count = 0;
-let global_index = 0;
-let names = ['2_of_clubs.png','2_of_diamonds.png','2_of_hearts.png','2_of_spades.png',
-'3_of_clubs.png','3_of_diamonds.png','3_of_hearts.png','3_of_spades.png',
-'4_of_clubs.png','4_of_diamonds.png','4_of_hearts.png','4_of_spades.png',
-'5_of_clubs.png','5_of_diamonds.png','5_of_hearts.png','5_of_spades.png',
-'6_of_clubs.png','6_of_diamonds.png','6_of_hearts.png','6_of_spades.png',
-'7_of_clubs.png','7_of_diamonds.png','7_of_hearts.png','7_of_spades.png',
-'8_of_clubs.png','8_of_diamonds.png','8_of_hearts.png','8_of_spades.png',
-'9_of_clubs.png','9_of_diamonds.png','9_of_hearts.png','9_of_spades.png',
+let back1,back2;
+let compare = false;
+let move = false;
+
+let names = [
+'02_of_clubs.png','02_of_diamonds.png','02_of_hearts.png','02_of_spades.png',
+'03_of_clubs.png','03_of_diamonds.png','03_of_hearts.png','03_of_spades.png',
+'04_of_clubs.png','04_of_diamonds.png','04_of_hearts.png','04_of_spades.png',
+'05_of_clubs.png','05_of_diamonds.png','05_of_hearts.png','05_of_spades.png',
+'06_of_clubs.png','06_of_diamonds.png','06_of_hearts.png','06_of_spades.png',
+'07_of_clubs.png','07_of_diamonds.png','07_of_hearts.png','07_of_spades.png',
+'08_of_clubs.png','08_of_diamonds.png','08_of_hearts.png','08_of_spades.png',
+'09_of_clubs.png','09_of_diamonds.png','09_of_hearts.png','09_of_spades.png',
 '10_of_clubs.png','10_of_diamonds.png','10_of_hearts.png','10_of_spades.png',
-'ace_of_clubs.png','ace_of_diamonds.png','ace_of_hearts.png','ace_of_spades.png',
-'jack_of_clubs2.png','jack_of_diamonds2.png','jack_of_hearts2.png','jack_of_spades2.png',
-'king_of_clubs2.png','king_of_diamonds2.png','king_of_hearts2.png','king_of_spades2.png',
-'queen_of_clubs2.png','queen_of_diamonds2.png','queen_of_hearts2.png','queen_of_spades2.png',
-'back_of_card.png'];
+'01_ace_of_clubs.png','01_ace_of_diamonds.png','01_ace_of_hearts.png','01_ace_of_spades.png',
+'11_jack_of_clubs2.png','11_jack_of_diamonds2.png','11_jack_of_hearts2.png','11_jack_of_spades2.png',
+'13_king_of_clubs2.png','13_king_of_diamonds2.png','13_king_of_hearts2.png','13_king_of_spades2.png',
+'12_queen_of_clubs2.png','12_queen_of_diamonds2.png','12_queen_of_hearts2.png','12_queen_of_spades2.png'
+];
 
 let cards = new Array();
+
+let deck1_count, deck2_count;
+
 let displace = 0;
-let index = -1;
+let index = -2;
 
 class Card{
-
   constructor(x,y,img){
     this.x = x;
     this.y = y;
@@ -39,45 +44,63 @@ class Card{
   }
 
   move(){
-    cards.forEach(element => element.show());
+    if(move){
+      if(this.y > height/2 - card_height/2 + 10){
 
-    if(this.y > height/2 - card_height/2){
-      this.y = this.y - displace;
-    }else{
-      global_control = true;
+        this.y -= displace;
+  
+      }else if(this.y < height/2 - card_height/2 - 10){
+  
+        this.y += displace;
+  
+      }else{
+  
+        compare = true;
+        move = false;
+  
+      }
     }
   }
+
   set(x,y){
     this.x = x;
     this.y = y;
   }
+
   moveTo(x,y){
 
+    if(this.x < x){
+      this.x+=displace;
+    }
+    if(this.x > x){
+      this.x-=displace;
+    }
+
+    if(this.y < y){
+      this.y+=displace;
+    }
     if(this.y > y){
-      this.y -= displace;
-    }else{
-      this.y += displace;
+      this.y-=displace;
     }
-    if(this.x>x){
-      this.x -= displace;
-    }else{
-      this.x += displace;
+  
+    if(Math.abs(this.x - x) < displace  && Math.abs(this.y - y) < displace){
+      global_control=true;
+      compare = false;
     }
+
   }
 
   clicked(){
     if((mouseX > this.x && mouseX < this.x+card_width) && (mouseY > this.y && mouseY < this.y + card_height)){
       if(global_control){
         global_control = false;
-        index ++;
-        deck_count--;
-        table_count++;
-        console.log(deck_count, table_count);
+        move = true;
+        console.log(index,index+1);
+        index +=2;
         displace = 10;
       }
     }
   }
-
 }
 
 function setup() {
@@ -86,34 +109,62 @@ function setup() {
   background(225);
 
   let i=0;
+  while(i<52){
+    
+    let img = loadImage('cards/'+names[i]);
+    cards[i] = new Card((2*width)/3 - card_width/2, height - card_height - 10 , img);
 
-  names.forEach(element => {
+    img = loadImage('cards/'+names[i+1]);
+    cards[i+1] = new Card(width/3 - card_width/2, 10 , img);
+    
+    i+=2;
 
-    let img = loadImage('cards/'+element);
-    cards[i] = new Card(width/2 - card_width/2, height - card_height - 10 , img);
-    console.log(element,i);
-    i++;
+  }
+  img = loadImage('cards/back_of_card.png');
+  back2 = new Card(width/3 - card_width/2, 10 , img);
+  img = loadImage('cards/back_of_card_blue.png');
+  back1 = new Card((2*width)/3- card_width/2, height - card_height - 10 , img);
 
-  });
 }
 
 function draw() {
   // put drawing code here
   background(225);
+  index_hidden = 0;
+  cards.forEach(element => {
 
-  cards[52].show();
+    element.show();
 
-  if(global_index < 53){
-    cards[global_index].show();
-  }
+  });
 
   if(index>=0 && index<names.length){
-
     cards[index].move();
+    cards[index+1].move();
   }
+
+  back1.show();
+  back2.show();
+
+  if(compare){
+    let char1 = names[index].charAt(0)+names[index].charAt(1);
+    let char2 = names[index+1].charAt(0)+names[index+1].charAt(1)
+
+    if(char2 > char1){
+      cards[index].moveTo(width/3- card_width/2, height - card_height - 10);
+      cards[index+1].moveTo(width/3- card_width/2, height - card_height - 10);
+    }else if(char1 > char2){
+      cards[index].moveTo((2*width)/3- card_width/2, 10);
+      cards[index+1].moveTo((2*width)/3- card_width/2,10);
+    }else{
+      console.log("WAR!");
+      global_control=true;
+      compare = false;
+    }
+    
+  }
+
 }
 
 function mousePressed(){
-    global_index = 0;
-    cards[52].clicked();
+  back1.clicked();
 }
