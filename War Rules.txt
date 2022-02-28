@@ -1,0 +1,13 @@
+Click the top of your deck to play your top card against the opponent’s card.  
+The player with the higher card collects both cards and they are placed into 
+a separate win pile.  If the cards are of the same rank, a War is initiated.  
+During a War, each player plays three cards face down on top of the played card 
+and one card face-up.  The card that is face-up will be compared to the opponent’s 
+face-up card and the player with the higher ranked card will collect all the cards 
+in the War.  If the cards are of the same rank, the War process is repeated until 
+a player wins the War.  When a player runs out of cards, their win pile will be 
+shuffled, and they will continue to play with those cards.  When a player 
+completely runs out of cards, the game is over, and the other player wins.
+
+The ranks in increasing order are as follows:  2, 3, 4, 5, 6, 7, 8, 9, 10, J, Q, K, A
+	(The suit of the card is disregarded)
