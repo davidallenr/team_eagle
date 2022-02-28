@@ -25,6 +25,30 @@ let names = [
 '12_queen_of_clubs2.png','12_queen_of_diamonds2.png','12_queen_of_hearts2.png','12_queen_of_spades2.png'
 ];
 
+//Randomly shuffling cards: 
+let randomize = (arr, n) =>
+{
+ 
+    // Start from the last element and swap
+    // one by one. We don't need to run for
+    // the first element that's why i > 0
+    for (let i = n - 1; i > 0; i--)
+    {
+        // Pick a random index from 0 to i inclusive
+        let j = Math.floor(Math.random() * (i + 1));
+ 
+        // Swap arr[i] with the element
+        // at random index
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+}
+
+randomize(names,names.length);
+
+for(let i=0;i<names.length;i++){
+  console.log(i);
+}
+
 let cards = new Array();
 
 let deck1_count, deck2_count;
@@ -69,7 +93,7 @@ class Card{
 
   moveTo(x,y){
 
-    if(this.x < x){
+    if(this.x < x){2
       this.x+=displace;
     }
     if(this.x > x){
@@ -124,7 +148,7 @@ function setup() {
   back2 = new Card(width/3 - card_width/2, 10 , img);
   img = loadImage('cards/back_of_card_blue.png');
   back1 = new Card((2*width)/3- card_width/2, height - card_height - 10 , img);
-
+1
 }
 
 function draw() {
@@ -132,9 +156,7 @@ function draw() {
   background(225);
   index_hidden = 0;
   cards.forEach(element => {
-
     element.show();
-
   });
 
   if(index>=0 && index<names.length){
@@ -157,12 +179,11 @@ function draw() {
       cards[index+1].moveTo((2*width)/3- card_width/2,10);
     }else{
       console.log("WAR!");
+
       global_control=true;
       compare = false;
     }
-    
   }
-
 }
 
 function mousePressed(){
