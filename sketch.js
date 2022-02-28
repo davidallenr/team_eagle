@@ -25,26 +25,6 @@ let names = [
 '13_king_of_clubs2.png','13_king_of_diamonds2.png','13_king_of_hearts2.png','13_king_of_spades2.png'
 ];
 
-//Randomly shuffling cards: 
-let randomize = (arr, n) =>
-{
- 
-    // Start from the last element and swap
-    // one by one. We don't need to run for
-    // the first element that's why i > 0
-    for (let i = n - 1; i > 0; i--){
-    
-        // Pick a random index from 0 to i inclusive
-        let j = Math.floor(Math.random() * (i + 1));
- 
-        // Swap arr[i] with the element
-        // at random index
-        [arr[i], arr[j]] = [arr[j], arr[i]];
-    }
-}
-
-randomize(names,names.length);
-
 let cards = new Array();
 
 let deck1_count, deck2_count;
