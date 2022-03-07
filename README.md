@@ -6,15 +6,24 @@ Team Eagle(Delta) repository.
 
 <!-- GETTING STARTED -->
 
-## Getting Started
+<!-- Live Demo -->
+
+# Live Demo
+
+View a live demo at the following link.
+[Live Link](https://davidallenr.github.io/team_eagle/)
+
+<p align="right">(<a href="#top">back to top</a>)</p>
+
+# Getting Started
 
 To get a local copy up and running follow these simple example steps.
 
-### Prerequisites
+## Prerequisites
 
 - NPM
 
-### Installation
+## Installation
 
 1. Clone the repo
 
