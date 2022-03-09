@@ -135,18 +135,18 @@ function setup() {
   let i=0;
   while(i<52){
     
-    let img = loadImage('cards/'+names[i]);
+    let img = loadImage('assets/cards/'+names[i]);
     cards[i] = new Card((2*width)/3 - card_width/2, height - card_height - 10 , img);
 
-    img = loadImage('cards/'+names[i+1]);
+    img = loadImage('assets/cards/'+names[i+1]);
     cards[i+1] = new Card(width/3 - card_width/2, 10 , img);
     
     i+=2;
 
   }
-  img = loadImage('cards/back_of_card.png');
+  img = loadImage('assets/cards/back_of_card.png');
   back2 = new Card(width/3 - card_width/2, 10 , img);
-  img = loadImage('cards/back_of_card_blue.png');
+  img = loadImage('assets/cards/back_of_card_blue.png');
   back1 = new Card((2*width)/3- card_width/2, height - card_height - 10 , img);
 1
 }
