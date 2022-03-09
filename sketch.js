@@ -8,6 +8,7 @@ let table_count = 0;
 let back1,back2;
 let compare = false;
 let move = false;
+let player_score = 0; // Player score variable
 
 let names = [
 '02_of_clubs.png','02_of_diamonds.png','02_of_hearts.png','02_of_spades.png',
@@ -110,6 +111,14 @@ class Card{
     if(Math.abs(this.x - x) < displace  && Math.abs(this.y - y) < displace){
       global_control=true;
       compare = false;
+
+      // Player score increase
+      // Current Implementation is just checking if the cards position is < half the screen width after it's moved
+      // if (this cards position < ( screen width / 2))
+      // TODO: screen width needs to be set as a variable and same with height.
+      if (this.x < 800/2) {
+        player_score += 1; // Increase player score
+      }
     }
 
   }
@@ -167,6 +176,9 @@ function draw() {
   back1.show();
   back2.show();
 
+  // Draw the player score to screen
+  // TODO: Style the text appropriately
+  text("Score: " + player_score, 10, 790);
   if(compare){
     let char1 = names[index].charAt(0)+names[index].charAt(1);
     let char2 = names[index+1].charAt(0)+names[index+1].charAt(1)
