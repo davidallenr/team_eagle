@@ -8,7 +8,15 @@ let table_count = 0;
 let back1,back2;
 let compare = false;
 let move = false;
-let player_score = 0; // Player score variable
+let player_score = 0;   // Player score variable
+
+// Screen state is how we can transition between title-game-gameover screens etc.
+// 0 = StarScreen
+// 1 = Game Screen
+// 2 = Game Over
+// 3 = Transition trigger to game over
+let screen_state = 0;
+
 
 let names = [
 '02_of_clubs.png','02_of_diamonds.png','02_of_hearts.png','02_of_spades.png',
@@ -161,7 +169,26 @@ function setup() {
 }
 
 function draw() {
-  // put drawing code here
+  // Screen state check to determine game state
+  if (screen_state == 0) {
+    startScreen();
+  } else if (screen_state == 1) {
+    gameRunning();
+  } else if (screen_state == 2) {
+    endGame();
+  }
+}
+
+// Start screen is when screen state == 0
+function startScreen() {
+  background(5,118,7);
+  text("Start Game", 800/2 - 40, 800/2);
+  text("Click to begin!", 800/2 - 40, 800/2 + 20);
+}
+
+// Game running is when screen state == 1
+// Main game logic and functions will be ran in this function
+function gameRunning() {
   background(225);
   index_hidden = 0;
   cards.forEach(element => {
@@ -179,7 +206,7 @@ function draw() {
   // Draw the player score to screen
   // TODO: Style the text appropriately
   text("Score: " + player_score, 10, 790);
-  if(compare){
+  if (compare){
     let char1 = names[index].charAt(0)+names[index].charAt(1);
     let char2 = names[index+1].charAt(0)+names[index+1].charAt(1)
 
@@ -196,8 +223,32 @@ function draw() {
       compare = false;
     }
   }
+
+  // Screen State check for game over condition
+  // if the length of the cards array is equal to index set state to 3
+  if (cards.length == index) {
+    screen_state = 3;
+  }
+}
+
+// End game is when the screen state == 2
+// this is currently triggered by a check of the array length and index in gameRunning()
+function endGame() {
+  background(1,150,150);
+  text("Game Over!", 800/2 - 40, 800/2);
 }
 
 function mousePressed(){
+  
+  // Check the screen state
+  // If screen state == 0 then start game
+  // If screen state == 3(transition state) then end game
+  // transition state is triggered when the cards array length == index length in gameRunning()
+  if (screen_state == 0) {
+    screen_state = 1;
+  } else if(screen_state == 3) {
+    screen_state = 2;
+  }
+
   back1.clicked();
 }
