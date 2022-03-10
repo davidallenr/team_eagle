@@ -210,10 +210,10 @@ function gameRunning() {
     let char1 = names[index].charAt(0)+names[index].charAt(1);
     let char2 = names[index+1].charAt(0)+names[index+1].charAt(1)
 
-    if(char2 > char1){
+    if(char2 < char1){
       cards[index].moveTo(width/3- card_width/2, height - card_height - 10);
       cards[index+1].moveTo(width/3- card_width/2, height - card_height - 10);
-    }else if(char1 > char2){
+    }else if(char1 < char2){
       cards[index].moveTo((2*width)/3- card_width/2, 10);
       cards[index+1].moveTo((2*width)/3- card_width/2,10);
     }else{
@@ -236,6 +236,7 @@ function gameRunning() {
 function endGame() {
   background(1,150,150);
   text("Game Over!", 800/2 - 40, 800/2);
+  text("Click to Play Again!", 800/2 - 40, 800/2 + 20);
 }
 
 function mousePressed(){
@@ -248,7 +249,22 @@ function mousePressed(){
     screen_state = 1;
   } else if(screen_state == 3) {
     screen_state = 2;
+  } else if (screen_state == 2) {
+    resetGame();
+    screen_state = 1;
   }
 
   back1.clicked();
+}
+
+function resetGame(){
+  index = -2;
+  cards = [];
+  player_score = 0;
+  compare = false;
+  move = false;
+  global_control = true;
+  randomize(names,names.length);
+  setup();
+  draw();
 }
