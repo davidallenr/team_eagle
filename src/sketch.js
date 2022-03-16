@@ -18,17 +18,21 @@ function setup() {
 
 }
 
-function draw() {
+function update() {
+	let dt = deltaTime / 1000;
 
+}
+
+function draw() {
   background(220);
 
   deck.showHand();
   deck_2.showTopOfDeck();
   rect(SCREEN_WIDTH/2, (SCREEN_HEIGHT - 50) / 2, IMAGE_WIDTH, IMAGE_HEIGHT);
-  deck.moveTopOfDeck();
+  
 }
 
 function mouseClicked() {
   loop();
-
+  
 }
