@@ -45,8 +45,8 @@ class Card {
         this.face = f;
         this.suit = s;
         this.fullName = face_names[f] + " of " + suit_names[s];
-        this.img = loadImage('../assets/cards/' + file_names[i]);
-        this.img_back = loadImage('../assets/cards/back_of_card.png');
+        this.img = loadImage('./assets/cards/' + file_names[i]);
+        this.img_back = loadImage('./assets/cards/back_of_card.png');
         this.topOfDeck = false;
         this.inCenter = false;
     }
