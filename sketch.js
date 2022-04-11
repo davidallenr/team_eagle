@@ -206,9 +206,10 @@ function gameRunning() {
   // Draw the player score to screen
   // TODO: Style the text appropriately
   text("Score: " + player_score, 10, 790);
+  
   if (compare){
     let char1 = names[index].charAt(0)+names[index].charAt(1);
-    let char2 = names[index+1].charAt(0)+names[index+1].charAt(1)
+    let char2 = names[index+1].charAt(0)+names[index+1].charAt(1);
 
     if(char2 < char1){
       cards[index].moveTo(width/3- card_width/2, height - card_height - 10);
@@ -216,13 +217,16 @@ function gameRunning() {
     }else if(char1 < char2){
       cards[index].moveTo((2*width)/3- card_width/2, 10);
       cards[index+1].moveTo((2*width)/3- card_width/2,10);
-    }else{
+    }else if(char1 = char2){
       console.log("WAR!");
-
-      global_control=true;
-      compare = false;
+      
+      cards[index].moveTo(width/3- card_width/2, height - card_height - 10);
+      cards[index+1].moveTo((2*width)/3- card_width/2,10);
+      
     }
   }
+
+  
 
   // Screen State check for game over condition
   // if the length of the cards array is equal to index set state to 3
