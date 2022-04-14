@@ -9,6 +9,8 @@ let back1,back2;
 let compare = false;
 let move = false;
 let player_score = 0;   // Player score variable
+let shuffling_card_sound;
+let background_music;
 
 // Screen state is how we can transition between title-game-gameover screens etc.
 // 0 = StarScreen
@@ -148,6 +150,8 @@ function setup() {
   // put setup code here 
   createCanvas(800,800);
   background(225);
+  shuffling_card_sound = loadSound("shuffling-cards-1.mp3");
+  shuffling_card_sound.play();
 
   let i=0;
   while(i<52){
@@ -191,6 +195,8 @@ function startScreen() {
 function gameRunning() {
   background(225);
   index_hidden = 0;
+  background_music = loadSound("The-Final-Battle.mp3");
+  background_music.play();
   cards.forEach(element => {
     element.show();
   });
