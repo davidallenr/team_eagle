@@ -144,6 +144,7 @@ class Card{
   }
 }
 
+
 function setup() {
   // put setup code here 
   createCanvas(800,800);
@@ -219,10 +220,16 @@ function gameRunning() {
       cards[index+1].moveTo((2*width)/3- card_width/2,10);
     }else if(char1 = char2){
       console.log("WAR!");
+
+      //output war image
       
-      cards[index].moveTo(width/3- card_width/2, height - card_height - 10);
-      cards[index+1].moveTo((2*width)/3- card_width/2,10);
-      
+
+      //Delay for image to be up before moving cards
+    var warDelay = 3000;
+      setTimeout(function(){
+        cards[index].moveTo(width/3- card_width/2, height - card_height - 10);
+        cards[index+1].moveTo((2*width)/3- card_width/2,10);
+      }, warDelay);
     }
   }
 
