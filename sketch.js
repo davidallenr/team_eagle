@@ -213,12 +213,15 @@ function gameRunning() {
     let char2 = names[index+1].charAt(0)+names[index+1].charAt(1);
 
     if(char2 < char1){
+      delayTime(1);
       cards[index].moveTo(width/3- card_width/2, height - card_height - 10);
       cards[index+1].moveTo(width/3- card_width/2, height - card_height - 10);
     }else if(char1 < char2){
+      delayTime(1);
       cards[index].moveTo((2*width)/3- card_width/2, 10);
       cards[index+1].moveTo((2*width)/3- card_width/2,10);
     }else if(char1 = char2){
+      delayTime(1);
       console.log("WAR!");
 
       //output war image
