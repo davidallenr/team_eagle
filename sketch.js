@@ -9,6 +9,7 @@ let back1,back2;
 let compare = false;
 let move = false;
 let player_score = 0;   // Player score variable
+let delayTime = 200;
 
 // Screen state is how we can transition between title-game-gameover screens etc.
 // 0 = StarScreen
@@ -37,7 +38,6 @@ let names = [
 //Randomly shuffling cards: 
 let randomize = (arr, n) =>
 {
- 
     // Start from the last element and swap
     // one by one. We don't need to run for
     // the first element that's why i > 0
@@ -45,7 +45,6 @@ let randomize = (arr, n) =>
     {
         // Pick a random index from 0 to i inclusive
         let j = Math.floor(Math.random() * (i + 1));
- 
         // Swap arr[i] with the element
         // at random index
         [arr[i], arr[j]] = [arr[j], arr[i]];
@@ -54,43 +53,38 @@ let randomize = (arr, n) =>
 
 randomize(names,names.length);
 
-for(let i=0;i<names.length;i++){
-  console.log(i);
-}
 
-let cards = new Array();
+let cards_1 = new Array();
+
+let cards_2 = new Array();
 
 let deck1_count, deck2_count;
 
 let displace = 0;
-let index = -2;
+let index2 = -1;
+let index1 = -1
 
 class Card{
-  constructor(x,y,img){
+  constructor(x,y,img,name){
     this.x = x;
     this.y = y;
     this.img = img;
+    this.name = name;
   }
 
   show(){
     image(this.img, this.x, this.y,card_width,card_height);
   }
 
-  move(){
+  move(){ 
     if(move){
       if(this.y > height/2 - card_height/2 + 10){
-
         this.y -= displace;
-  
       }else if(this.y < height/2 - card_height/2 - 10){
-  
         this.y += displace;
-  
       }else{
-  
         compare = true;
         move = false;
-  
       }
     }
   }
@@ -105,6 +99,7 @@ class Card{
     if(this.x < x){2
       this.x+=displace;
     }
+
     if(this.x > x){
       this.x-=displace;
     }
@@ -112,14 +107,14 @@ class Card{
     if(this.y < y){
       this.y+=displace;
     }
+
     if(this.y > y){
       this.y-=displace;
     }
-  
+
     if(Math.abs(this.x - x) < displace  && Math.abs(this.y - y) < displace){
       global_control=true;
       compare = false;
-
       // Player score increase
       // Current Implementation is just checking if the cards position is < half the screen width after it's moved
       // if (this cards position < ( screen width / 2))
@@ -136,9 +131,10 @@ class Card{
       if(global_control){
         global_control = false;
         move = true;
-        console.log(index,index+1);
-        index +=2;
+        index1++;
+        index2++;
         displace = 10;
+        console.log("clicked");
       }
     }
   }
@@ -151,25 +147,25 @@ function setup() {
   background(225);
 
   let i=0;
-  while(i<52){
+  while(i<26){
     
     let img = loadImage('assets/cards/'+names[i]);
-    cards[i] = new Card((2*width)/3 - card_width/2, height - card_height - 10 , img);
+    cards_1[i] = new Card((2*width)/3 - card_width/2, height - card_height - 10 , img,names[i]);
 
-    img = loadImage('assets/cards/'+names[i+1]);
-    cards[i+1] = new Card(width/3 - card_width/2, 10 , img);
-    
-    i+=2;
+    img = loadImage('assets/cards/'+names[i+25]);
+    cards_2[i] = new Card(width/3 - card_width/2, 10 , img,names[i+25]);
+    i++;
 
   }
   img = loadImage('assets/cards/back_of_card.png');
   back2 = new Card(width/3 - card_width/2, 10 , img);
   img = loadImage('assets/cards/back_of_card_blue.png');
   back1 = new Card((2*width)/3- card_width/2, height - card_height - 10 , img);
-1
+
 }
 
 function draw() {
+
   // Screen state check to determine game state
   if (screen_state == 0) {
     startScreen();
@@ -178,6 +174,12 @@ function draw() {
   } else if (screen_state == 2) {
     endGame();
   }
+
+}
+
+//function to create a delay when comparing cards
+const sleep = (millis) => { 
+  return new Promise(resolve => setTimeout(resolve, millis)) 
 }
 
 // Start screen is when screen state == 0
@@ -189,16 +191,20 @@ function startScreen() {
 
 // Game running is when screen state == 1
 // Main game logic and functions will be ran in this function
-function gameRunning() {
+async function gameRunning() {
   background(225);
   index_hidden = 0;
-  cards.forEach(element => {
+
+  cards_1.forEach(element => {
+    element.show();
+  });
+  cards_2.forEach(element => {
     element.show();
   });
 
-  if(index>=0 && index<names.length){
-    cards[index].move();
-    cards[index+1].move();
+  if((index1>=0 && index1<names.length/2)&&(index2>=0 && index2<names.length/2)){
+    cards_1[index1].move();
+    cards_2[index2].move();
   }
 
   back1.show();
@@ -208,53 +214,59 @@ function gameRunning() {
   // TODO: Style the text appropriately
   text("Score: " + player_score, 10, 790);
   
-  if (compare){
-    let char1 = names[index].charAt(0)+names[index].charAt(1);
-    let char2 = names[index+1].charAt(0)+names[index+1].charAt(1);
-
+  if(compare){
+    let char1 = cards_1[index1].name.charAt(0)+cards_1[index1].name.charAt(1);
+    let char2 = cards_2[index2].name.charAt(0)+cards_2[index2].name.charAt(1);
+    await sleep(delayTime);
     if(char2 < char1){
-      delayTime(1);
-      cards[index].moveTo(width/3- card_width/2, height - card_height - 10);
-      cards[index+1].moveTo(width/3- card_width/2, height - card_height - 10);
-    }else if(char1 < char2){
-      delayTime(1);
-      cards[index].moveTo((2*width)/3- card_width/2, 10);
-      cards[index+1].moveTo((2*width)/3- card_width/2,10);
-    }else if(char1 = char2){
-      delayTime(1);
-      console.log("WAR!");
-
-      //output war image
+      // delayTime(1);
       
-
-      //Delay for image to be up before moving cards
-    var warDelay = 3000;
-      setTimeout(function(){
-        cards[index].moveTo(width/3- card_width/2, height - card_height - 10);
-        cards[index+1].moveTo((2*width)/3- card_width/2,10);
-      }, warDelay);
+      cards_1[index1].moveTo(width/3- card_width/2, height - card_height - 10);
+      cards_2[index2].moveTo(width/3- card_width/2, height - card_height - 10);
+    }else if(char1 < char2){
+      // delayTime(1);
+      cards_1[index1].moveTo((2*width)/3- card_width/2, 10);
+      cards_2[index2].moveTo((2*width)/3- card_width/2,10);
+    }else if(char1 = char2){
+      // delayTime(1);
+      compare = false;
+      console.log("WAR!");
+      //Move three cards from each deck to the middle of the screen
+      // moveThreeCardsUp();
+      
+      global_control = true;
     }
+
+    console.log("out of loop")
   }
-
-  
-
   // Screen State check for game over condition
   // if the length of the cards array is equal to index set state to 3
-  if (cards.length == index) {
+  if (cards_1.length == index1) {
     screen_state = 3;
+  }
+}
+
+function moveThreeCardsUp(){
+  for(let i=0;i<3;i++){
+    setTimeout(() => {  
+      cards_1[++index1].moveTo(500,500);
+      cards_2[++index2].moveTo(500,500);
+     }, 400);
+
   }
 }
 
 // End game is when the screen state == 2
 // this is currently triggered by a check of the array length and index in gameRunning()
 function endGame() {
+
   background(1,150,150);
   text("Game Over!", 800/2 - 40, 800/2);
   text("Click to Play Again!", 800/2 - 40, 800/2 + 20);
+
 }
 
 function mousePressed(){
-  
   // Check the screen state
   // If screen state == 0 then start game
   // If screen state == 3(transition state) then end game
@@ -267,13 +279,34 @@ function mousePressed(){
     resetGame();
     screen_state = 1;
   }
-
   back1.clicked();
 }
 
+
+
+// const sleep = (millis) => { 
+//     return new Promise(resolve => setTimeout(resolve, millis)) 
+// }
+// function getRandomInt(min, max) {
+//     min = Math.ceil(min)
+//     max = Math.floor(max)
+//     return Math.floor(Math.random() * (max - min) + min)
+// }
+// async function draw() {
+//     let time = frameCount * 20
+//     let value2 = getRandomInt(100,500)
+//     line( time - 20, value1, time, value2 )
+//     value1 = value2
+//     await sleep(100)
+//     if (time < 1200) { redraw() } else { myProgram() }
+// }
+
 function resetGame(){
-  index = -2;
-  cards = [];
+
+  index1 = -1;
+  index2 = -1
+  cards_1 = [];
+  cards_2 = [];
   player_score = 0;
   compare = false;
   move = false;
@@ -281,4 +314,5 @@ function resetGame(){
   randomize(names,names.length);
   setup();
   draw();
+  
 }
