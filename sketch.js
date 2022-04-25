@@ -15,6 +15,8 @@ let backgroundLogo;
 let endBackground;
 let scoreFont;
 let coolFont;
+let shuffling_card_sound;
+let background_music;
 
 // Screen state is how we can transition between title-game-gameover screens etc.
 // 0 = StarScreen
@@ -151,7 +153,7 @@ function setup() {
   createCanvas(800,800);
   background(225);
   // when the game sets up the decks, card shuffling sound will play
-  shuffling_card_sound = loadSound("shuffling-cards-1.mp3");
+  shuffling_card_sound = loadSound('assets/sounds/shuffling-cards-1.mp3');
   shuffling_card_sound.play();
   logo = loadImage('assets/UI/logo.png');
 
@@ -209,7 +211,7 @@ async function gameRunning() {
   index_hidden = 0;
 
   // when the game is running, the background music will play
-  background_music = loadSound("The-Final-Battle.mp3");
+  background_music = loadSound('assets/sounds/The-Final-Battle.mp3');
   background_music.play();
 
 
