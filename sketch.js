@@ -146,7 +146,7 @@ function setup() {
   // put setup code here 
   createCanvas(800,800);
   background(225);
-  logo = loadImage('/assets/UI/logo.png');
+  logo = loadImage('assets/UI/logo.png');
 
   let i=0;
   while(i<26){
