@@ -1,4 +1,5 @@
 let card;
+let logo;
 let card_width = 100;
 let card_height = 145.2;
 let hidden_card = 52;
@@ -9,10 +10,11 @@ let back1,back2;
 let compare = false;
 let move = false;
 let player_score = 0;   // Player score variable
-let shuffling_card_sound;
-let background_music;
 let delayTime = 200;
-
+let backgroundLogo;
+let endBackground;
+let scoreFont;
+let coolFont;
 
 // Screen state is how we can transition between title-game-gameover screens etc.
 // 0 = StarScreen
@@ -151,6 +153,7 @@ function setup() {
   // when the game sets up the decks, card shuffling sound will play
   shuffling_card_sound = loadSound("shuffling-cards-1.mp3");
   shuffling_card_sound.play();
+  logo = loadImage('assets/UI/logo.png');
 
   let i=0;
   while(i<26){
@@ -191,15 +194,20 @@ const sleep = (millis) => {
 // Start screen is when screen state == 0
 function startScreen() {
   background(5,118,7);
-  text("Start Game", 800/2 - 40, 800/2);
-  text("Click to begin!", 800/2 - 40, 800/2 + 20);
+  image(logo, 150, 50); // Title Screen Logo Image
+  textAlign(CENTER);
+  textSize(30);
+  textFont(coolFont);
+  text("Start Game?", 800/2 - 20, 800/2);
+  text("Click to begin!", 800/2 - 20, 800/2 + 30);
 }
 
 // Game running is when screen state == 1
 // Main game logic and functions will be ran in this function
 async function gameRunning() {
-  background(225);
+  background(backgroundLogo);
   index_hidden = 0;
+
   // when the game is running, the background music will play
   background_music = loadSound("The-Final-Battle.mp3");
   background_music.play();
@@ -222,9 +230,11 @@ async function gameRunning() {
 
   // Draw the player score to screen
   // TODO: Style the text appropriately
-  text("Score: " + player_score, 10, 790);
+  textSize(25);
+  fill(255,0,0);
+  textFont(scoreFont);
+  text("Score: " + player_score, 80, 780);
   
-
   if(compare){
     let char1 = cards_1[index1].name.charAt(0)+cards_1[index1].name.charAt(1);
     let char2 = cards_2[index2].name.charAt(0)+cards_2[index2].name.charAt(1);
@@ -247,7 +257,7 @@ async function gameRunning() {
       
       global_control = true;
     }
-    
+
     console.log("out of loop")
   }
   // Screen State check for game over condition
@@ -271,9 +281,13 @@ function moveThreeCardsUp(){
 // this is currently triggered by a check of the array length and index in gameRunning()
 function endGame() {
 
-  background(1,150,150);
-  text("Game Over!", 800/2 - 40, 800/2);
-  text("Click to Play Again!", 800/2 - 40, 800/2 + 20);
+  background(endBackground);
+  textSize(24);
+  fill(100,100,255);
+  textAlign(CENTER);
+  textFont(coolFont);
+  text("Game Over!", 800/1.8 - 40, 800/2.3);
+  text("Click to Play Again!", 800/1.8 - 40, 800/2.3 + 30);
 
 }
 
@@ -293,7 +307,12 @@ function mousePressed(){
   back1.clicked();
 }
 
-
+function preload(){
+  backgroundLogo = loadImage('assets/UI/cardBackground.jpg');
+  endBackground = loadImage('assets/UI/endBackground.jpg');
+  scoreFont = loadFont('assets/fonts/PermanentMarker-Regular.ttf');
+  coolFont = loadFont('assets/fonts/CreteRound-Regular.ttf');
+}
 
 // const sleep = (millis) => { 
 //     return new Promise(resolve => setTimeout(resolve, millis)) 
