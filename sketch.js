@@ -148,6 +148,7 @@ function setup() {
   // put setup code here 
   createCanvas(800,800);
   background(225);
+  // when the game sets up the decks, card shuffling sound will play
   shuffling_card_sound = loadSound("shuffling-cards-1.mp3");
   shuffling_card_sound.play();
 
@@ -199,6 +200,7 @@ function startScreen() {
 async function gameRunning() {
   background(225);
   index_hidden = 0;
+  // when the game is running, the background music will play
   background_music = loadSound("The-Final-Battle.mp3");
   background_music.play();
 
