@@ -1,4 +1,5 @@
 let card;
+let logo;
 let card_width = 100;
 let card_height = 145.2;
 let hidden_card = 52;
@@ -145,6 +146,7 @@ function setup() {
   // put setup code here 
   createCanvas(800,800);
   background(225);
+  logo = loadImage('/assets/UI/logo.png');
 
   let i=0;
   while(i<26){
@@ -185,6 +187,7 @@ const sleep = (millis) => {
 // Start screen is when screen state == 0
 function startScreen() {
   background(5,118,7);
+  image(logo, 150, 50); // Title Screen Logo Image
   text("Start Game", 800/2 - 40, 800/2);
   text("Click to begin!", 800/2 - 40, 800/2 + 20);
 }
