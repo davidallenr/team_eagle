@@ -11,6 +11,7 @@ let compare = false;
 let move = false;
 let player_score = 0;   // Player score variable
 let delayTime = 200;
+let backgroundLogo;
 
 // Screen state is how we can transition between title-game-gameover screens etc.
 // 0 = StarScreen
@@ -195,7 +196,7 @@ function startScreen() {
 // Game running is when screen state == 1
 // Main game logic and functions will be ran in this function
 async function gameRunning() {
-  background(225);
+  background(backgroundLogo);
   index_hidden = 0;
 
   cards_1.forEach(element => {
@@ -285,7 +286,9 @@ function mousePressed(){
   back1.clicked();
 }
 
-
+function preload(){
+  backgroundLogo = loadImage('assets/UI/cardBackground.jpg');
+}
 
 // const sleep = (millis) => { 
 //     return new Promise(resolve => setTimeout(resolve, millis)) 
