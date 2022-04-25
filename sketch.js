@@ -12,6 +12,9 @@ let move = false;
 let player_score = 0;   // Player score variable
 let delayTime = 200;
 let backgroundLogo;
+let endBackground;
+let scoreFont;
+let coolFont;
 
 // Screen state is how we can transition between title-game-gameover screens etc.
 // 0 = StarScreen
@@ -189,8 +192,11 @@ const sleep = (millis) => {
 function startScreen() {
   background(5,118,7);
   image(logo, 150, 50); // Title Screen Logo Image
-  text("Start Game", 800/2 - 40, 800/2);
-  text("Click to begin!", 800/2 - 40, 800/2 + 20);
+  textAlign(CENTER);
+  textSize(30);
+  textFont(coolFont);
+  text("Start Game?", 800/2 - 20, 800/2);
+  text("Click to begin!", 800/2 - 20, 800/2 + 30);
 }
 
 // Game running is when screen state == 1
@@ -216,7 +222,10 @@ async function gameRunning() {
 
   // Draw the player score to screen
   // TODO: Style the text appropriately
-  text("Score: " + player_score, 10, 790);
+  textSize(25);
+  fill(255,0,0);
+  textFont(scoreFont);
+  text("Score: " + player_score, 80, 780);
   
   if(compare){
     let char1 = cards_1[index1].name.charAt(0)+cards_1[index1].name.charAt(1);
@@ -264,9 +273,13 @@ function moveThreeCardsUp(){
 // this is currently triggered by a check of the array length and index in gameRunning()
 function endGame() {
 
-  background(1,150,150);
-  text("Game Over!", 800/2 - 40, 800/2);
-  text("Click to Play Again!", 800/2 - 40, 800/2 + 20);
+  background(endBackground);
+  textSize(24);
+  fill(100,100,255);
+  textAlign(CENTER);
+  textFont(coolFont);
+  text("Game Over!", 800/1.8 - 40, 800/2.3);
+  text("Click to Play Again!", 800/1.8 - 40, 800/2.3 + 30);
 
 }
 
@@ -288,6 +301,9 @@ function mousePressed(){
 
 function preload(){
   backgroundLogo = loadImage('assets/UI/cardBackground.jpg');
+  endBackground = loadImage('assets/UI/endBackground.jpg');
+  scoreFont = loadFont('assets/fonts/PermanentMarker-Regular.ttf');
+  coolFont = loadFont('assets/fonts/CreteRound-Regular.ttf');
 }
 
 // const sleep = (millis) => { 
