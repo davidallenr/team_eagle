@@ -9,7 +9,10 @@ let back1,back2;
 let compare = false;
 let move = false;
 let player_score = 0;   // Player score variable
+let shuffling_card_sound;
+let background_music;
 let delayTime = 200;
+
 
 // Screen state is how we can transition between title-game-gameover screens etc.
 // 0 = StarScreen
@@ -145,6 +148,8 @@ function setup() {
   // put setup code here 
   createCanvas(800,800);
   background(225);
+  shuffling_card_sound = loadSound("shuffling-cards-1.mp3");
+  shuffling_card_sound.play();
 
   let i=0;
   while(i<26){
@@ -194,6 +199,9 @@ function startScreen() {
 async function gameRunning() {
   background(225);
   index_hidden = 0;
+  background_music = loadSound("The-Final-Battle.mp3");
+  background_music.play();
+
 
   cards_1.forEach(element => {
     element.show();
@@ -214,6 +222,7 @@ async function gameRunning() {
   // TODO: Style the text appropriately
   text("Score: " + player_score, 10, 790);
   
+
   if(compare){
     let char1 = cards_1[index1].name.charAt(0)+cards_1[index1].name.charAt(1);
     let char2 = cards_2[index2].name.charAt(0)+cards_2[index2].name.charAt(1);
@@ -236,7 +245,7 @@ async function gameRunning() {
       
       global_control = true;
     }
-
+    
     console.log("out of loop")
   }
   // Screen State check for game over condition
