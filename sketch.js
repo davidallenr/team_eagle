@@ -291,9 +291,16 @@ function endGame() {
   fill(100,100,255);
   textAlign(CENTER);
   textFont(coolFont);
-  text("Game Over!", 800/1.8 - 40, 800/2.3);
-  text("Click to Restart!", 800/1.8 - 40, 800/2.3 + 30);
-
+  if (player1_score > player2_score) {
+    text("You WON! Good Job!", 800/1.8 - 40, 800/2.3);
+    text("Click to Restart!", 800/1.8 - 40, 800/2.3 + 30);
+  } else if (player1_score < player2_score) {
+    text("You Lost! Good luck next time!", 800/1.8 - 40, 800/2.3);
+    text("Click to Restart!", 800/1.8 - 40, 800/2.3 + 30);
+  } else {
+    text("Draw!", 800/1.8 - 40, 800/2.3);
+    text("Click to Restart!", 800/1.8 - 40, 800/2.3 + 30);
+    }
 }
 
 function mousePressed(){
@@ -343,6 +350,8 @@ function resetGame(){
   index2 = -1
   cards_1 = [];
   cards_2 = [];
+  char1 = 0;
+  char2 = 0;
   player1_score = 0;
   player2_score = 0;
   compare = false;
