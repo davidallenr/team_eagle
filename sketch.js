@@ -1,5 +1,7 @@
 let card;
 let logo;
+let char1 = 0;
+let char2 = 0;
 let card_width = 100;
 let card_height = 145.2;
 let hidden_card = 52;
@@ -9,10 +11,12 @@ let table_count = 0;
 let back1,back2;
 let compare = false;
 let move = false;
-let player_score = 0;   // Player score variable
+let player1_score = 0;   // Player score variable
+let player2_score = 0;
 let delayTime = 200;
 let backgroundLogo;
 let endBackground;
+let startBackground;
 let scoreFont;
 let coolFont;
 
@@ -124,9 +128,9 @@ class Card{
       // Current Implementation is just checking if the cards position is < half the screen width after it's moved
       // if (this cards position < ( screen width / 2))
       // TODO: screen width needs to be set as a variable and same with height.
-      if (this.x < 800/2) {
-        player_score += 1; // Increase player score
-      }
+      //if (this.x < 800/2) {
+      //}
+      updateScore.call(); // Increase player score
     }
 
   }
@@ -190,8 +194,9 @@ const sleep = (millis) => {
 
 // Start screen is when screen state == 0
 function startScreen() {
-  background(5,118,7);
+  background(startBackground);
   image(logo, 150, 50); // Title Screen Logo Image
+  fill(100,100,255);
   textAlign(CENTER);
   textSize(30);
   textFont(coolFont);
@@ -225,12 +230,13 @@ async function gameRunning() {
   textSize(25);
   fill(255,0,0);
   textFont(scoreFont);
-  text("Score: " + player_score, 80, 780);
+  text("Human: " + player1_score, 80, 780);
+  text("Computer: " + player2_score, 700, 80);
   
   if(compare){
-    let char1 = cards_1[index1].name.charAt(0)+cards_1[index1].name.charAt(1);
-    let char2 = cards_2[index2].name.charAt(0)+cards_2[index2].name.charAt(1);
-    await sleep(delayTime);
+    char1 = cards_1[index1].name.charAt(0)+cards_1[index1].name.charAt(1);
+    char2 = cards_2[index2].name.charAt(0)+cards_2[index2].name.charAt(1);
+    //await sleep(delayTime);
     if(char2 < char1){
       // delayTime(1);
       
@@ -259,6 +265,13 @@ async function gameRunning() {
   }
 }
 
+function updateScore(){
+  if (char1 > char2){
+    player1_score += parseInt(char1) + parseInt(char2);
+  } else if (char1 < char2){
+    player2_score += parseInt(char1) + parseInt(char2);
+  }
+}
 function moveThreeCardsUp(){
   for(let i=0;i<3;i++){
     setTimeout(() => {  
@@ -278,9 +291,16 @@ function endGame() {
   fill(100,100,255);
   textAlign(CENTER);
   textFont(coolFont);
-  text("Game Over!", 800/1.8 - 40, 800/2.3);
-  text("Click to Play Again!", 800/1.8 - 40, 800/2.3 + 30);
-
+  if (player1_score > player2_score) {
+    text("You WON! Good Job!", 800/1.8 - 40, 800/2.3);
+    text("Click to Restart!", 800/1.8 - 40, 800/2.3 + 30);
+  } else if (player1_score < player2_score) {
+    text("You Lost! Good luck next time!", 800/1.8 - 40, 800/2.3);
+    text("Click to Restart!", 800/1.8 - 40, 800/2.3 + 30);
+  } else {
+    text("Draw!", 800/1.8 - 40, 800/2.3);
+    text("Click to Restart!", 800/1.8 - 40, 800/2.3 + 30);
+    }
 }
 
 function mousePressed(){
@@ -294,12 +314,13 @@ function mousePressed(){
     screen_state = 2;
   } else if (screen_state == 2) {
     resetGame();
-    screen_state = 1;
+    screen_state = 0;
   }
   back1.clicked();
 }
 
 function preload(){
+  startBackground = loadImage('assets/UI/startBackground.jpg');
   backgroundLogo = loadImage('assets/UI/cardBackground.jpg');
   endBackground = loadImage('assets/UI/endBackground.jpg');
   scoreFont = loadFont('assets/fonts/PermanentMarker-Regular.ttf');
@@ -329,7 +350,10 @@ function resetGame(){
   index2 = -1
   cards_1 = [];
   cards_2 = [];
-  player_score = 0;
+  char1 = 0;
+  char2 = 0;
+  player1_score = 0;
+  player2_score = 0;
   compare = false;
   move = false;
   global_control = true;
