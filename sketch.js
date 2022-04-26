@@ -11,7 +11,8 @@ let table_count = 0;
 let back1,back2;
 let compare = false;
 let move = false;
-let player_score = 0;   // Player score variable
+let player1_score = 0;   // Player score variable
+let player2_score = 0;
 let delayTime = 200;
 let backgroundLogo;
 let endBackground;
@@ -126,9 +127,9 @@ class Card{
       // Current Implementation is just checking if the cards position is < half the screen width after it's moved
       // if (this cards position < ( screen width / 2))
       // TODO: screen width needs to be set as a variable and same with height.
-      if (this.x < 800/2) {
-        updateScore.call(); // Increase player score
-      }
+      //if (this.x < 800/2) {
+      //}
+      updateScore.call(); // Increase player score
     }
 
   }
@@ -227,7 +228,8 @@ async function gameRunning() {
   textSize(25);
   fill(255,0,0);
   textFont(scoreFont);
-  text("Score: " + player_score, 80, 780);
+  text("Human: " + player1_score, 80, 780);
+  text("Computer: " + player2_score, 700, 80);
   
   if(compare){
     char1 = cards_1[index1].name.charAt(0)+cards_1[index1].name.charAt(1);
@@ -263,9 +265,9 @@ async function gameRunning() {
 
 function updateScore(){
   if (char1 > char2){
-    console.log(char1);
-    console.log(char2);
-    player_score += parseInt(char1) + parseInt(char2);
+    player1_score += parseInt(char1) + parseInt(char2);
+  } else if (char1 < char2){
+    player2_score += parseInt(char1) + parseInt(char2);
   }
 }
 function moveThreeCardsUp(){
@@ -338,7 +340,8 @@ function resetGame(){
   index2 = -1
   cards_1 = [];
   cards_2 = [];
-  player_score = 0;
+  player1_score = 0;
+  player2_score = 0;
   compare = false;
   move = false;
   global_control = true;
