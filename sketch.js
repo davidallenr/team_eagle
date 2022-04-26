@@ -1,5 +1,7 @@
 let card;
 let logo;
+let char1 = 0;
+let char2 = 0;
 let card_width = 100;
 let card_height = 145.2;
 let hidden_card = 52;
@@ -125,7 +127,7 @@ class Card{
       // if (this cards position < ( screen width / 2))
       // TODO: screen width needs to be set as a variable and same with height.
       if (this.x < 800/2) {
-        player_score += 1; // Increase player score
+        updateScore.call(); // Increase player score
       }
     }
 
@@ -228,9 +230,9 @@ async function gameRunning() {
   text("Score: " + player_score, 80, 780);
   
   if(compare){
-    let char1 = cards_1[index1].name.charAt(0)+cards_1[index1].name.charAt(1);
-    let char2 = cards_2[index2].name.charAt(0)+cards_2[index2].name.charAt(1);
-    await sleep(delayTime);
+    char1 = cards_1[index1].name.charAt(0)+cards_1[index1].name.charAt(1);
+    char2 = cards_2[index2].name.charAt(0)+cards_2[index2].name.charAt(1);
+    //await sleep(delayTime);
     if(char2 < char1){
       // delayTime(1);
       
@@ -259,6 +261,13 @@ async function gameRunning() {
   }
 }
 
+function updateScore(){
+  if (char1 > char2){
+    console.log(char1);
+    console.log(char2);
+    player_score += parseInt(char1) + parseInt(char2);
+  }
+}
 function moveThreeCardsUp(){
   for(let i=0;i<3;i++){
     setTimeout(() => {  
