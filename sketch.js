@@ -16,6 +16,7 @@ let player2_score = 0;
 let delayTime = 200;
 let backgroundLogo;
 let endBackground;
+let startBackground;
 let scoreFont;
 let coolFont;
 
@@ -193,8 +194,9 @@ const sleep = (millis) => {
 
 // Start screen is when screen state == 0
 function startScreen() {
-  background(5,118,7);
+  background(startBackground);
   image(logo, 150, 50); // Title Screen Logo Image
+  fill(100,100,255);
   textAlign(CENTER);
   textSize(30);
   textFont(coolFont);
@@ -290,7 +292,7 @@ function endGame() {
   textAlign(CENTER);
   textFont(coolFont);
   text("Game Over!", 800/1.8 - 40, 800/2.3);
-  text("Click to Play Again!", 800/1.8 - 40, 800/2.3 + 30);
+  text("Click to Restart!", 800/1.8 - 40, 800/2.3 + 30);
 
 }
 
@@ -305,12 +307,13 @@ function mousePressed(){
     screen_state = 2;
   } else if (screen_state == 2) {
     resetGame();
-    screen_state = 1;
+    screen_state = 0;
   }
   back1.clicked();
 }
 
 function preload(){
+  startBackground = loadImage('assets/UI/startBackground.jpg');
   backgroundLogo = loadImage('assets/UI/cardBackground.jpg');
   endBackground = loadImage('assets/UI/endBackground.jpg');
   scoreFont = loadFont('assets/fonts/PermanentMarker-Regular.ttf');
