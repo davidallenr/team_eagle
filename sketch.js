@@ -429,7 +429,9 @@ function endGame() {
   fill(100,100,255);
   textAlign(CENTER);
   textFont(coolFont);
-
+  if (myText == '') {
+    myText = 'Human'
+  }
   if (player1_score > player2_score) {
     text("You WON, " + myText + "!", 800/1.8 - 45, 800/2.6 - 10);
     text("Great Job!", 800/1.8 - 45, 800/2.6 + 30);
