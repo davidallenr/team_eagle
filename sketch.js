@@ -149,12 +149,23 @@ class Card{
   }
 }
 
+let myInput;
+let myButton;
+let myText = '';
 
 function setup() {
   // put setup code here 
   createCanvas(800,800);
   background(225);
   logo = loadImage('assets/UI/logo.png');
+
+  myInput = createInput('');
+  myInput.position(width/2.52,height/2)
+
+  myButton = createButton('Start');
+  myButton.position(width/2.16, height/1.86)
+
+  myButton.mousePressed(startButtonClicked);
 
   let i=0;
   while(i<26){
@@ -187,6 +198,13 @@ function draw() {
 
 }
 
+function startButtonClicked() {
+  screen_state = 1;
+  myInput.hide();
+  myButton.hide();
+  myText = myInput.value();
+}
+
 //function to create a delay when comparing cards
 const sleep = (millis) => { 
   return new Promise(resolve => setTimeout(resolve, millis)) 
@@ -200,8 +218,10 @@ function startScreen() {
   textAlign(CENTER);
   textSize(30);
   textFont(coolFont);
-  text("Start Game?", 800/2 - 20, 800/2);
-  text("Click to begin!", 800/2 - 20, 800/2 + 30);
+  text("Welcome to War Card Game!", 800/2 - 20, 800/2 - 100);
+  fill(200,200,100);
+  textSize(20);
+  text("Enter your name!", 800/2 - 15, 800/2 - 20);
 }
 
 // Game running is when screen state == 1
@@ -230,7 +250,11 @@ async function gameRunning() {
   textSize(25);
   fill(255,0,0);
   textFont(scoreFont);
-  text("Human: " + player1_score, 80, 780);
+  if (myText == ''){
+    text("Human: " + player1_score, 80, 780);
+  } else {
+    text(myText + ": " + player1_score, 80, 780);
+  }
   text("Computer: " + player2_score, 700, 80);
   
   if(compare){
@@ -292,7 +316,7 @@ function endGame() {
   textAlign(CENTER);
   textFont(coolFont);
   if (player1_score > player2_score) {
-    text("You WON! Good Job!", 800/1.8 - 40, 800/2.3);
+    text("You WON, " + myText + "! Good Job!", 800/1.8 - 40, 800/2.3);
     text("Click to Restart!", 800/1.8 - 40, 800/2.3 + 30);
   } else if (player1_score < player2_score) {
     text("You Lost! Good luck next time!", 800/1.8 - 40, 800/2.3);
@@ -308,9 +332,10 @@ function mousePressed(){
   // If screen state == 0 then start game
   // If screen state == 3(transition state) then end game
   // transition state is triggered when the cards array length == index length in gameRunning()
-  if (screen_state == 0) {
-    screen_state = 1;
-  } else if(screen_state == 3) {
+  //if (screen_state == 0) {
+  //  screen_state = 1;
+  //} else 
+  if(screen_state == 3) {
     screen_state = 2;
   } else if (screen_state == 2) {
     resetGame();
@@ -354,6 +379,7 @@ function resetGame(){
   char2 = 0;
   player1_score = 0;
   player2_score = 0;
+  myText = '';
   compare = false;
   move = false;
   global_control = true;
