@@ -150,7 +150,7 @@ class Card{
         move = true;
         index1++;
         index2++;
-        displace = 10;
+        displace = 7;
         console.log("clicked");
       }
     }
@@ -366,6 +366,14 @@ async function gameRunning() {
     text(myText + ": " + player1_score, 80, 780);
   }
   text("Computer: " + player2_score, 700, 80);
+  fill(193,248,207);
+  rect(600, 680, 180, 50, 10, 10, 10, 10);
+  describe('white rect with black outline');
+  textSize(16);
+  fill(40,40,40);
+  textFont(coolFont);
+  text("Click on your top card", 690, 700);
+  text("to play it", 690, 720);
   
   if(compare){
     char1 = cards_1[index1].name.charAt(0)+cards_1[index1].name.charAt(1);
