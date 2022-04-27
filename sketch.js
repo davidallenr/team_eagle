@@ -17,8 +17,11 @@ let delayTime = 200;
 let backgroundLogo;
 let endBackground;
 let startBackground;
+let rulesBackground;
 let scoreFont;
 let coolFont;
+let playButton;
+let rulesButton;
 
 // Screen state is how we can transition between title-game-gameover screens etc.
 // 0 = StarScreen
@@ -150,7 +153,8 @@ class Card{
 }
 
 let myInput;
-let myButton;
+let startButton;
+let backButton;
 let myText = '';
 
 function setup() {
@@ -161,11 +165,27 @@ function setup() {
 
   myInput = createInput('');
   myInput.position(width/2.52,height/2)
+  myInput.hide();
 
-  myButton = createButton('Start');
-  myButton.position(width/2.16, height/1.86)
+  startButton = createButton('Start');
+  startButton.position(width/2.16, height/1.86)
+  startButton.mousePressed(startButtonClicked);
+  startButton.hide();
 
-  myButton.mousePressed(startButtonClicked);
+  backButton = createButton('Back to main menu');
+  backButton.position(width/2.45, height/1.13)
+  backButton.mousePressed(backButtonClicked);
+  backButton.hide();
+
+  playButton = createButton('Play');
+  playButton.position(width/2.16, height/2)
+  playButton.mousePressed(playButtonClicked);
+  playButton.hide();
+
+  rulesButton = createButton('Rules');
+  rulesButton.position(width/2.18, height/1.8)
+  rulesButton.mousePressed(rulesButtonClicked);
+  rulesButton.hide();
 
   let i=0;
   while(i<26){
@@ -191,18 +211,42 @@ function draw() {
   if (screen_state == 0) {
     startScreen();
   } else if (screen_state == 1) {
-    gameRunning();
+    startGameScreen();
   } else if (screen_state == 2) {
+    gameRunning();
+  } else if (screen_state == 3) {
     endGame();
+  } else if (screen_state == 4) {
+    displayRules();
   }
 
 }
 
 function startButtonClicked() {
-  screen_state = 1;
+  screen_state = 2;
   myInput.hide();
-  myButton.hide();
+  startButton.hide();
+  backButton.hide();
   myText = myInput.value();
+}
+
+function backButtonClicked(){
+  screen_state = 0;
+  backButton.hide();
+  myInput.hide();
+  startButton.hide();
+}
+
+function playButtonClicked(){
+  screen_state = 1;
+  playButton.hide();
+  rulesButton.hide();
+}
+
+function rulesButtonClicked(){
+  screen_state = 4;
+  rulesButton.hide();
+  playButton.hide();
 }
 
 //function to create a delay when comparing cards
@@ -210,15 +254,65 @@ const sleep = (millis) => {
   return new Promise(resolve => setTimeout(resolve, millis)) 
 }
 
+function displayRules(){
+  background(rulesBackground);
+  backButton.show();
+  fill(165,42,42);
+  textAlign(CENTER);
+  textSize(40);
+  textFont(coolFont);
+  text("Rules of WAR Card Game!", 400, 60);
+  textSize(17);
+  fill(0,0,0);
+  text("War is a very simple card game for two players. Much like real war it's incredibly long", 400, 110);
+  text("and pointless. It's mostly a kids game, since it relies exclusively on luck of the draw.", 400, 140);
+  text("Like most card games it has plenty of regional variations, but the rules used on this site", 400, 170);
+  text("are simple. The game is played as follows:", 400, 200);
+  text("1. Each player gets dealt half the deck, 26 cards, and the cards are put face down", 400, 250);
+  text("in a stack in front of the players.", 400, 280);
+  text("2. Both players turn their top card face up at the same time. The person with the", 400, 310);
+  text("higher card wins that draw, and takes both the cards.", 400, 340);
+  text("3. If both players draw a card of the same rank, e.g. they both draw 8s, then", 400, 370);
+  text("there's a war. The face up cards are left on the table and each player puts three", 400, 400);
+  text("cards face down on the table, and then puts one card face up. The face up card", 400, 430);
+  text("determines who wins the war and gets all 10 cards that are on the table at this", 400, 460);
+  text("point. If the face up card is again the same rank, then the war goes on, three", 400, 490);
+  text("more face down, one face up etc.", 400, 520);
+  text("4. The player with the highest score at the end wins.", 400, 550);
+  text("5. If a player finishes their cards during a war without having enough cards to", 400, 580);
+  text("finish the war then he loses immediately.", 400, 610);
+  text("That's all there is to it. Just a lot of clicking on cards and hoping for the best! Enjoy :)", 400, 660);
+
+}
+
 // Start screen is when screen state == 0
 function startScreen() {
   background(startBackground);
+  playButton.show();
+  rulesButton.show();
   image(logo, 150, 50); // Title Screen Logo Image
   fill(100,100,255);
   textAlign(CENTER);
   textSize(30);
   textFont(coolFont);
   text("Welcome to War Card Game!", 800/2 - 20, 800/2 - 100);
+  fill(200,200,200);
+  textSize(18);
+  text("Please choose an option", 800/2 - 20, 800/2 - 40);
+}
+
+
+function startGameScreen() {
+  background(startBackground);
+  myInput.show();
+  startButton.show();
+  backButton.show();
+  image(logo, 150, 50); // Title Screen Logo Image
+  fill(100,100,255);
+  textAlign(CENTER);
+  textSize(30);
+  textFont(coolFont);
+  text("Are you ready for WAR?!", 800/2 - 20, 800/2 - 100);
   fill(200,200,100);
   textSize(20);
   text("Enter your name!", 800/2 - 15, 800/2 - 20);
@@ -285,7 +379,7 @@ async function gameRunning() {
   // Screen State check for game over condition
   // if the length of the cards array is equal to index set state to 3
   if (cards_1.length == index1) {
-    screen_state = 3;
+    screen_state = 5;
   }
 }
 
@@ -317,14 +411,12 @@ function endGame() {
   textFont(coolFont);
   if (player1_score > player2_score) {
     text("You WON, " + myText + "! Good Job!", 800/1.8 - 40, 800/2.3);
-    text("Click to Restart!", 800/1.8 - 40, 800/2.3 + 30);
   } else if (player1_score < player2_score) {
     text("You Lost! Good luck next time!", 800/1.8 - 40, 800/2.3);
-    text("Click to Restart!", 800/1.8 - 40, 800/2.3 + 30);
   } else {
     text("Draw!", 800/1.8 - 40, 800/2.3);
-    text("Click to Restart!", 800/1.8 - 40, 800/2.3 + 30);
     }
+  text("Click to go back to main menu!", 800/1.8 - 40, 800/2.3 + 30);
 }
 
 function mousePressed(){
@@ -335,9 +427,9 @@ function mousePressed(){
   //if (screen_state == 0) {
   //  screen_state = 1;
   //} else 
-  if(screen_state == 3) {
-    screen_state = 2;
-  } else if (screen_state == 2) {
+  if(screen_state == 5) {
+    screen_state = 3;
+  } else if (screen_state == 3) {
     resetGame();
     screen_state = 0;
   }
@@ -348,6 +440,7 @@ function preload(){
   startBackground = loadImage('assets/UI/startBackground.jpg');
   backgroundLogo = loadImage('assets/UI/cardBackground.jpg');
   endBackground = loadImage('assets/UI/endBackground.jpg');
+  rulesBackground = loadImage('assets/UI/rulesBackground.jpg');
   scoreFont = loadFont('assets/fonts/PermanentMarker-Regular.ttf');
   coolFont = loadFont('assets/fonts/CreteRound-Regular.ttf');
 }
