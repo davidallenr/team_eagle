@@ -338,6 +338,10 @@ function startGameScreen() {
 // Main game logic and functions will be ran in this function
 async function gameRunning() {
   background(backgroundLogo);
+
+  backButton.show();
+  backButton.position(30,30);
+
   index_hidden = 0;
 
   cards_1.forEach(element => {
