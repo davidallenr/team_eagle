@@ -20,7 +20,12 @@ let startBackground;
 let rulesBackground;
 let scoreFont;
 let coolFont;
+let myInput;
+let startButton;
+let backButton;
+let myText = '';
 let playButton;
+let replayButton;
 let rulesButton;
 
 // Screen state is how we can transition between title-game-gameover screens etc.
@@ -152,11 +157,6 @@ class Card{
   }
 }
 
-let myInput;
-let startButton;
-let backButton;
-let myText = '';
-
 function setup() {
   // put setup code here 
   createCanvas(800,800);
@@ -164,7 +164,7 @@ function setup() {
   logo = loadImage('assets/UI/logo.png');
 
   myInput = createInput('');
-  myInput.position(width/2.52,height/2)
+  myInput.position(width/2.64, height/2)
   myInput.hide();
 
   startButton = createButton('Start');
@@ -173,7 +173,7 @@ function setup() {
   startButton.hide();
 
   backButton = createButton('Back to main menu');
-  backButton.position(width/2.45, height/1.13)
+  backButton.position(width/2.45, height/1.13);
   backButton.mousePressed(backButtonClicked);
   backButton.hide();
 
@@ -181,6 +181,11 @@ function setup() {
   playButton.position(width/2.16, height/2)
   playButton.mousePressed(playButtonClicked);
   playButton.hide();
+
+  replayButton = createButton('Replay');
+  replayButton.position(width/2.16, height/2)
+  replayButton.mousePressed(replayButtonClicked);
+  replayButton.hide();
 
   rulesButton = createButton('Rules');
   rulesButton.position(width/2.18, height/1.8)
@@ -230,17 +235,28 @@ function startButtonClicked() {
   myText = myInput.value();
 }
 
+let backButtonState = false;
 function backButtonClicked(){
   screen_state = 0;
   backButton.hide();
   myInput.hide();
   startButton.hide();
+  replayButton.hide();
+  backButtonState = true;
+  resetGame();
 }
 
 function playButtonClicked(){
   screen_state = 1;
   playButton.hide();
   rulesButton.hide();
+}
+
+function replayButtonClicked(){
+  screen_state = 2;
+  replayButton.hide();
+  backButton.hide();
+  resetGame();
 }
 
 function rulesButtonClicked(){
@@ -295,10 +311,10 @@ function startScreen() {
   textAlign(CENTER);
   textSize(30);
   textFont(coolFont);
-  text("Welcome to War Card Game!", 800/2 - 20, 800/2 - 100);
+  text("Welcome to War Card Game!", 800/2 - 20, 800/2 - 80);
   fill(200,200,200);
   textSize(18);
-  text("Please choose an option", 800/2 - 20, 800/2 - 40);
+  //text("Choose an option to conitue", 800/2 - 20, 800/2 - 40);
 }
 
 
@@ -405,18 +421,24 @@ function moveThreeCardsUp(){
 function endGame() {
 
   background(endBackground);
-  textSize(24);
+  replayButton.show();
+  replayButton.position(width/2.1, height/2.08);
+  backButton.show();
+  backButton.position(width/2.3, height/1.9);
+  textSize(30);
   fill(100,100,255);
   textAlign(CENTER);
   textFont(coolFont);
+
   if (player1_score > player2_score) {
-    text("You WON, " + myText + "! Good Job!", 800/1.8 - 40, 800/2.3);
+    text("You WON, " + myText + "!", 800/1.8 - 45, 800/2.6 - 10);
+    text("Great Job!", 800/1.8 - 45, 800/2.6 + 30);
   } else if (player1_score < player2_score) {
-    text("You Lost! Good luck next time!", 800/1.8 - 40, 800/2.3);
+    text("Sorry " + myText + ", You Lost!", 800/1.8 - 45, 800/2.6 - 10);
+    text("Good luck next time!", 800/1.8 - 45, 800/2.6 + 30);
   } else {
-    text("Draw!", 800/1.8 - 40, 800/2.3);
+    text("Draw!", 800/1.8 - 45, 800/2.6);
     }
-  text("Click to go back to main menu!", 800/1.8 - 40, 800/2.3 + 30);
 }
 
 function mousePressed(){
@@ -429,10 +451,11 @@ function mousePressed(){
   //} else 
   if(screen_state == 5) {
     screen_state = 3;
-  } else if (screen_state == 3) {
-    resetGame();
-    screen_state = 0;
   }
+  //} else if (screen_state == 3) {
+  //  resetGame();
+  //  screen_state = 0;
+
   back1.clicked();
 }
 
@@ -472,12 +495,13 @@ function resetGame(){
   char2 = 0;
   player1_score = 0;
   player2_score = 0;
-  myText = '';
+  if (backButtonState) {
+    myText = '';
+  }
   compare = false;
   move = false;
   global_control = true;
   randomize(names,names.length);
   setup();
   draw();
-  
 }
