@@ -18,6 +18,7 @@ let backgroundLogo;
 let endBackground;
 let startBackground;
 let rulesBackground;
+let warBackground;
 let scoreFont;
 let coolFont;
 let myInput;
@@ -27,6 +28,9 @@ let myText = '';
 let playButton;
 let replayButton;
 let rulesButton;
+let index_hidden = -1;
+let warCondition = false;
+let warCardsPile = false;
 
 // Screen state is how we can transition between title-game-gameover screens etc.
 // 0 = StarScreen
@@ -355,26 +359,24 @@ function startGameScreen() {
   text("Enter your name!", 800/2 - 15, 800/2 - 20);
 }
 
-let index_hidden = -1;
-let warCondition = false;
-let warCardsPile = false;
-
 // Game running is when screen state == 1
 // Main game logic and functions will be ran in this function
 async function gameRunning() {
-  background(backgroundLogo);
+  
+  if (warCondition) {
+    background(warBackground);
+  } else {
+    background(backgroundLogo);
+  }
 
   backButton.show();
   backButton.position(30,30);
 
-  //console.log(index_hidden);
   for (let i=0; i<26; ++i) {
-    //console.log(index_hidden);
     if ((warCondition) && (i == index_hidden + 1 || i == index_hidden + 2 || i == index_hidden + 3)) {
       cards_1[i].showFaceDown();
       cards_2[i].showFaceDown();
     } else {
-      //console.log("showFaceUp");
       cards_1[i].showFaceUp();
       cards_2[i].showFaceUp();
     }
@@ -410,7 +412,6 @@ async function gameRunning() {
   text("Click on your top card", 690, 700);
   text("to play it", 690, 720);
   
-  //warCondition = false;
   if(compare){
     char1 = cards_1[index1].name.charAt(0)+cards_1[index1].name.charAt(1);
     char2 = cards_2[index2].name.charAt(0)+cards_2[index2].name.charAt(1);
@@ -425,8 +426,6 @@ async function gameRunning() {
           cards_1[i].moveTo(width/3- card_width/2, height - card_height - 10);
           cards_2[i].moveTo(width/3- card_width/2, height - card_height - 10);
         }
-        //moveCardsPile();
-        //warCardsPile = false;
         
       } else {
         cards_1[index1].moveTo(width/3- card_width/2, height - card_height - 10);
@@ -442,7 +441,6 @@ async function gameRunning() {
           cards_1[i].moveTo((2*width)/3- card_width/2, 10);
           cards_2[i].moveTo((2*width)/3- card_width/2,10);
         }
-        //warCardsPile = false;
       } else {
         cards_1[index1].moveTo((2*width)/3- card_width/2, 10);
         cards_2[index2].moveTo((2*width)/3- card_width/2,10);
@@ -451,28 +449,16 @@ async function gameRunning() {
       // delayTime(1);
       compare = false;
       console.log("WAR!");
-      //Move three cards from each deck to the middle of the screen
-      // moveThreeCardsUp();
       warCondition = true;
       index_hidden = index1;
-      console.log("index_hidden = " + index_hidden);
-
-      console.log("char1 = " + char1 + ", char2 = " + char2);
-      if (warCardsPile) {
-        moveCardsPile();
-        //warCardsPile = false;
-      }
-      
       global_control = true;
     } else {
       compare = false;
       global_control = true;
     }
-    //warCardsPile = false;
 
     console.log("out of loop 1")
   }
-
 
   console.log("out of loop 2")
   // Screen State check for game over condition
@@ -482,39 +468,11 @@ async function gameRunning() {
   }
 }
 
-function moveCardsPile() {
-  console.log("outside loop index_hidden = " + index_hidden);
-  if (char1 < char2) {
-    for (let i=index_hidden; i<=index_hidden + 4; ++i) {
-      console.log("inside loop with " + char1 + " < " + char2 + " index_hidden = " + index_hidden);
-      console.log("inside loop i = " + i);
-      cards_1[i].moveTo((2*width)/3- card_width/2, 10);
-      cards_2[i].moveTo((2*width)/3- card_width/2,10);
-    }
-  } else if (char1 > char2) {
-    for (let i=index_hidden; i<=index_hidden + 4; ++i) {
-      console.log("inside loop with " + char1 + " > " + char2 + " index_hidden = " + index_hidden);
-      console.log("inside loop i = " + i);
-      cards_1[i].moveTo(width/3- card_width/2, height - card_height - 10);
-      cards_2[i].moveTo(width/3- card_width/2, height - card_height - 10);
-    }
-  }
-}
-
 function updateScore(){
   if (char1 > char2){
     player1_score += parseInt(char1) + parseInt(char2);
   } else if (char1 < char2){
     player2_score += parseInt(char1) + parseInt(char2);
-  }
-}
-function moveThreeCardsUp(){
-  for(let i=0;i<3;i++){
-    setTimeout(() => {  
-      cards_1[++index1].moveTo(500,500);
-      cards_2[++index2].moveTo(500,500);
-     }, 400);
-
   }
 }
 
@@ -552,16 +510,10 @@ function mousePressed(){
   // If screen state == 0 then start game
   // If screen state == 3(transition state) then end game
   // transition state is triggered when the cards array length == index length in gameRunning()
-  //if (screen_state == 0) {
-  //  screen_state = 1;
-  //} else 
   if(screen_state == 5) {
     screen_state = 3;
   }
-  //} else if (screen_state == 3) {
-  //  resetGame();
-  //  screen_state = 0;
-
+  
   back1.clicked();
 }
 
@@ -570,6 +522,7 @@ function preload(){
   backgroundLogo = loadImage('assets/UI/cardBackground.jpg');
   endBackground = loadImage('assets/UI/endBackground.jpg');
   rulesBackground = loadImage('assets/UI/rulesBackground.jpg');
+  warBackground = loadImage('assets/UI/warBackground.jpg');
   scoreFont = loadFont('assets/fonts/PermanentMarker-Regular.ttf');
   coolFont = loadFont('assets/fonts/CreteRound-Regular.ttf');
 }
@@ -608,6 +561,9 @@ function resetGame(){
   compare = false;
   move = false;
   global_control = true;
+  warCondition = false;
+  warCardsPile = false;
+  index_hidden = -1;
   randomize(names,names.length);
   setup();
   draw();
