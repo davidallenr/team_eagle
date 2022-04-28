@@ -111,6 +111,10 @@ class Card{
       }else{
         compare = true;
         move = false;
+        if (warCondition && (index_hidden + 4 == index1)) {
+          warCondition = false;
+          warCardsPile = true;
+        }
       }
     }
   }
@@ -157,10 +161,6 @@ class Card{
         index1++;
         index2++;
         displace = 7;
-        if (warCondition && (index_hidden + 4 == index1)) {
-          warCondition = false;
-          warCardsPile = true;
-        }
         console.log("clicked");
         console.log("index_hidden + 4 = " + (index_hidden + 4));
         console.log("index1 = " + index1);
