@@ -164,31 +164,37 @@ function setup() {
   logo = loadImage('assets/UI/logo.png');
 
   myInput = createInput('');
-  myInput.position(width/2.64, height/2)
+  myInput.position(290, 397);
+  myInput.size(200,20);
   myInput.hide();
 
   startButton = createButton('Start');
-  startButton.position(width/2.16, height/1.86)
+  startButton.position(width/2.33, height/1.86);
+  startButton.size(100,30);
   startButton.mousePressed(startButtonClicked);
   startButton.hide();
 
   backButton = createButton('Back to main menu');
   backButton.position(width/2.45, height/1.13);
+  backButton.size(140,30);
   backButton.mousePressed(backButtonClicked);
   backButton.hide();
 
   playButton = createButton('Play');
-  playButton.position(width/2.16, height/2)
+  playButton.position(width/2.3, height/2);
+  playButton.size(100,30);
   playButton.mousePressed(playButtonClicked);
   playButton.hide();
 
   replayButton = createButton('Replay');
-  replayButton.position(width/2.16, height/2)
+  replayButton.position(width/2.16, height/2);
+  replayButton.size(100,30);
   replayButton.mousePressed(replayButtonClicked);
   replayButton.hide();
 
   rulesButton = createButton('Rules');
-  rulesButton.position(width/2.18, height/1.8)
+  rulesButton.position(width/2.3, height/1.8);
+  rulesButton.size(100,30);
   rulesButton.mousePressed(rulesButtonClicked);
   rulesButton.hide();
 
@@ -434,9 +440,11 @@ function endGame() {
 
   background(endBackground);
   replayButton.show();
-  replayButton.position(width/2.1, height/2.08);
+  replayButton.position(340, height/2.08);
+  replayButton.size(150,30);
   backButton.show();
-  backButton.position(width/2.3, height/1.9);
+  backButton.position(340, height/1.88);
+  backButton.size(150,30);
   textSize(30);
   fill(100,100,255);
   textAlign(CENTER);
@@ -512,6 +520,7 @@ function resetGame(){
   if (backButtonState) {
     myText = '';
   }
+  backButtonState = false;
   compare = false;
   move = false;
   global_control = true;
