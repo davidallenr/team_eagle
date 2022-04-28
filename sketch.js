@@ -82,15 +82,20 @@ let index2 = -1;
 let index1 = -1
 
 class Card{
-  constructor(x,y,img,name){
+  constructor(x,y,imgFaceUp,imgFaceDown,name){
     this.x = x;
     this.y = y;
-    this.img = img;
+    this.imgFaceUp = imgFaceUp;
+    this.imgFaceDown = imgFaceDown;
     this.name = name;
   }
 
-  show(){
-    image(this.img, this.x, this.y,card_width,card_height);
+  showFaceUp(){
+    image(this.imgFaceUp, this.x, this.y,card_width,card_height);
+  }
+
+  showFaceDown(){
+    image(this.imgFaceDown, this.x, this.y,card_width,card_height);
   }
 
   move(){ 
@@ -106,14 +111,9 @@ class Card{
     }
   }
 
-  set(x,y){
-    this.x = x;
-    this.y = y;
-  }
-
   moveTo(x,y){
 
-    if(this.x < x){2
+    if(this.x < x){
       this.x+=displace;
     }
 
@@ -139,6 +139,8 @@ class Card{
       //if (this.x < 800/2) {
       //}
       updateScore.call(); // Increase player score
+      warCardsPile = false;
+      index_hidden = -1;
     }
 
   }
@@ -151,7 +153,15 @@ class Card{
         index1++;
         index2++;
         displace = 7;
+        if (warCondition && (index_hidden + 4 == index1)) {
+          warCondition = false;
+          warCardsPile = true;
+        }
         console.log("clicked");
+        console.log("index_hidden + 4 = " + (index_hidden + 4));
+        console.log("index1 = " + index1);
+        console.log("warCondition = " + warCondition);
+        console.log("warCardsPile = " + warCardsPile);
       }
     }
   }
@@ -201,18 +211,23 @@ function setup() {
   let i=0;
   while(i<26){
     
-    let img = loadImage('assets/cards/'+names[i]);
-    cards_1[i] = new Card((2*width)/3 - card_width/2, height - card_height - 10 , img,names[i]);
+    let imgFaceUp = loadImage('assets/cards/'+names[i]);
+    let imgFaceDown = loadImage('assets/cards/back_of_card_blue.png');
+    cards_1[i] = new Card((2*width)/3 - card_width/2, height - card_height - 10 , imgFaceUp, imgFaceDown, names[i]);
 
-    img = loadImage('assets/cards/'+names[i+25]);
-    cards_2[i] = new Card(width/3 - card_width/2, 10 , img,names[i+25]);
+    imgFaceUp = loadImage('assets/cards/'+names[i+25]);
+    imgFaceDown = loadImage('assets/cards/back_of_card.png');
+    cards_2[i] = new Card(width/3 - card_width/2, 10 , imgFaceUp, imgFaceDown, names[i+25]);
     i++;
-
   }
-  img = loadImage('assets/cards/back_of_card.png');
-  back2 = new Card(width/3 - card_width/2, 10 , img);
-  img = loadImage('assets/cards/back_of_card_blue.png');
-  back1 = new Card((2*width)/3- card_width/2, height - card_height - 10 , img);
+
+  imgFaceUp = loadImage('assets/cards/back_of_card.png');
+  imgFaceDown = loadImage('assets/cards/back_of_card.png');
+  back2 = new Card(width/3 - card_width/2, 10 , imgFaceUp, imgFaceDown);
+
+  imgFaceUp = loadImage('assets/cards/back_of_card_blue.png');
+  imgFaceDown = loadImage('assets/cards/back_of_card_blue.png');
+  back1 = new Card((2*width)/3- card_width/2, height - card_height - 10 , imgFaceUp, imgFaceDown);
 
 }
 
@@ -340,6 +355,10 @@ function startGameScreen() {
   text("Enter your name!", 800/2 - 15, 800/2 - 20);
 }
 
+let index_hidden = -1;
+let warCondition = false;
+let warCardsPile = false;
+
 // Game running is when screen state == 1
 // Main game logic and functions will be ran in this function
 async function gameRunning() {
@@ -348,22 +367,28 @@ async function gameRunning() {
   backButton.show();
   backButton.position(30,30);
 
-  index_hidden = 0;
+  //console.log(index_hidden);
+  for (let i=0; i<26; ++i) {
+    //console.log(index_hidden);
+    if ((warCondition) && (i == index_hidden + 1 || i == index_hidden + 2 || i == index_hidden + 3)) {
+      cards_1[i].showFaceDown();
+      cards_2[i].showFaceDown();
+    } else {
+      //console.log("showFaceUp");
+      cards_1[i].showFaceUp();
+      cards_2[i].showFaceUp();
+    }
+  }
 
-  cards_1.forEach(element => {
-    element.show();
-  });
-  cards_2.forEach(element => {
-    element.show();
-  });
+  
 
   if((index1>=0 && index1<names.length/2)&&(index2>=0 && index2<names.length/2)){
     cards_1[index1].move();
     cards_2[index2].move();
   }
 
-  back1.show();
-  back2.show();
+  back1.showFaceDown();
+  back2.showFaceDown();
 
   // Draw the player score to screen
   // TODO: Style the text appropriately
@@ -385,35 +410,94 @@ async function gameRunning() {
   text("Click on your top card", 690, 700);
   text("to play it", 690, 720);
   
+  //warCondition = false;
   if(compare){
     char1 = cards_1[index1].name.charAt(0)+cards_1[index1].name.charAt(1);
     char2 = cards_2[index2].name.charAt(0)+cards_2[index2].name.charAt(1);
     //await sleep(delayTime);
-    if(char2 < char1){
+    if((char2 < char1) && (!warCondition)){
       // delayTime(1);
-      
-      cards_1[index1].moveTo(width/3- card_width/2, height - card_height - 10);
-      cards_2[index2].moveTo(width/3- card_width/2, height - card_height - 10);
-    }else if(char1 < char2){
+      console.log("char1 = " + char1 + ", char2 = " + char2);
+      if (warCardsPile) {
+        for (let i=index_hidden; i<=index_hidden + 4; ++i) {
+          console.log("inside loop with " + char1 + " > " + char2 + " index_hidden = " + index_hidden);
+          console.log("inside loop i = " + i);
+          cards_1[i].moveTo(width/3- card_width/2, height - card_height - 10);
+          cards_2[i].moveTo(width/3- card_width/2, height - card_height - 10);
+        }
+        //moveCardsPile();
+        //warCardsPile = false;
+        
+      } else {
+        cards_1[index1].moveTo(width/3- card_width/2, height - card_height - 10);
+        cards_2[index2].moveTo(width/3- card_width/2, height - card_height - 10);
+      }
+    }else if((char1 < char2) && (!warCondition)){
       // delayTime(1);
-      cards_1[index1].moveTo((2*width)/3- card_width/2, 10);
-      cards_2[index2].moveTo((2*width)/3- card_width/2,10);
-    }else if(char1 = char2){
+      console.log("char1 = " + char1 + ", char2 = " + char2);
+      if (warCardsPile) {
+        for (let i=index_hidden; i<=index_hidden + 4; ++i) {
+          console.log("inside loop with " + char1 + " < " + char2 + " index_hidden = " + index_hidden);
+          console.log("inside loop i = " + i);
+          cards_1[i].moveTo((2*width)/3- card_width/2, 10);
+          cards_2[i].moveTo((2*width)/3- card_width/2,10);
+        }
+        //warCardsPile = false;
+      } else {
+        cards_1[index1].moveTo((2*width)/3- card_width/2, 10);
+        cards_2[index2].moveTo((2*width)/3- card_width/2,10);
+      }
+    }else if((char1 == char2) && (!warCondition)){
       // delayTime(1);
       compare = false;
       console.log("WAR!");
       //Move three cards from each deck to the middle of the screen
       // moveThreeCardsUp();
+      warCondition = true;
+      index_hidden = index1;
+      console.log("index_hidden = " + index_hidden);
+
+      console.log("char1 = " + char1 + ", char2 = " + char2);
+      if (warCardsPile) {
+        moveCardsPile();
+        //warCardsPile = false;
+      }
       
       global_control = true;
+    } else {
+      compare = false;
+      global_control = true;
     }
+    //warCardsPile = false;
 
-    console.log("out of loop")
+    console.log("out of loop 1")
   }
+
+
+  console.log("out of loop 2")
   // Screen State check for game over condition
   // if the length of the cards array is equal to index set state to 3
   if (cards_1.length == index1) {
     screen_state = 5;
+  }
+}
+
+function moveCardsPile() {
+  console.log("outside loop index_hidden = " + index_hidden);
+  if (char1 < char2) {
+    for (let i=index_hidden; i<=index_hidden + 4; ++i) {
+      console.log("inside loop with " + char1 + " < " + char2 + " index_hidden = " + index_hidden);
+      console.log("inside loop i = " + i);
+      cards_1[i].moveTo((2*width)/3- card_width/2, 10);
+      cards_2[i].moveTo((2*width)/3- card_width/2,10);
+    }
+  } else if (char1 > char2) {
+    for (let i=index_hidden; i<=index_hidden + 4; ++i) {
+      console.log("inside loop with " + char1 + " > " + char2 + " index_hidden = " + index_hidden);
+      console.log("inside loop i = " + i);
+      cards_1[i].moveTo(width/3- card_width/2, height - card_height - 10);
+      cards_2[i].moveTo(width/3- card_width/2, height - card_height - 10);
+    }
   }
 }
 
