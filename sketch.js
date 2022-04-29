@@ -13,7 +13,6 @@ let compare = false;
 let move = false;
 let player1_score = 0;   // Player score variable
 let player2_score = 0;
-let delayTime = 200;
 let backgroundLogo;
 let endBackground;
 let startBackground;
@@ -35,6 +34,7 @@ let clickToSeeResult = false;
 let warCounter = 0;
 let numberOfCardsInPile = 0;
 let doubleWar = false;
+let speedSlider;
 
 // Screen state is how we can transition between title-game-gameover screens etc.
 // 0 = StarScreen
@@ -85,7 +85,7 @@ let cards_2 = new Array();
 
 let deck1_count, deck2_count;
 
-let displace = 0;
+let displace;
 let index2 = -1;
 let index1 = -1
 
@@ -162,8 +162,6 @@ class Card{
       // Current Implementation is just checking if the cards position is < half the screen width after it's moved
       // if (this cards position < ( screen width / 2))
       // TODO: screen width needs to be set as a variable and same with height.
-      //if (this.x < 800/2) {
-      //}
       if (!warCondition) {
         updateScore.call(); // Increase player score
       }
@@ -183,12 +181,6 @@ class Card{
         move = true;
         index1++;
         index2++;
-        displace = 7;
-        console.log("clicked");
-        console.log("index_hidden + 4 = " + (index_hidden + 4));
-        console.log("index1 = " + index1);
-        console.log("warCondition = " + warCondition);
-        console.log("warCardsPile = " + warCardsPile);
       }
     }
   }
@@ -234,6 +226,10 @@ function setup() {
   rulesButton.size(100,30);
   rulesButton.mousePressed(rulesButtonClicked);
   rulesButton.hide();
+
+  speedSlider = createSlider(1,15,7);
+  speedSlider.size(100);
+  speedSlider.hide();
 
   let i=0;
   while(i<26){
@@ -290,6 +286,7 @@ function backButtonClicked(){
   myInput.hide();
   startButton.hide();
   replayButton.hide();
+  speedSlider.hide();
   backButtonState = true;
   resetGame();
 }
@@ -311,11 +308,6 @@ function rulesButtonClicked(){
   screen_state = 4;
   rulesButton.hide();
   playButton.hide();
-}
-
-//function to create a delay when comparing cards
-const sleep = (millis) => { 
-  return new Promise(resolve => setTimeout(resolve, millis)) 
 }
 
 function displayRules(){
@@ -360,9 +352,6 @@ function startScreen() {
   textSize(30);
   textFont(coolFont);
   text("Welcome to War Card Game!", 800/2 - 20, 800/2 - 80);
-  fill(200,200,200);
-  textSize(18);
-  //text("Choose an option to conitue", 800/2 - 20, 800/2 - 40);
 }
 
 
@@ -384,8 +373,8 @@ function startGameScreen() {
 
 // Game running is when screen state == 1
 // Main game logic and functions will be ran in this function
-async function gameRunning() {
-  
+function gameRunning() {
+
   if (warCondition) {
     background(warBackground);
   } else {
@@ -394,6 +383,18 @@ async function gameRunning() {
 
   backButton.show();
   backButton.position(30,30);
+
+  fill(255,127,127);
+  rect(16, 73, 48, 18, 6, 6, 6, 6);
+  textFont(scoreFont);
+  fill(0,0,0);
+  textSize(14);
+  text("Speed:", 40, 86);
+
+  speedSlider.show();
+  speedSlider.position(80,80);
+
+  displace = speedSlider.value();
 
   for (let i=0; i<26; ++i) {
     if ((warCondition) && (i == index_hidden + 1 || i == index_hidden + 2 || i == index_hidden + 3)) {
@@ -445,8 +446,8 @@ async function gameRunning() {
     fill(255,127,127);
     rect(484, 730, 100, 60, 10, 10, 10, 10);
     fill(40,40,40);
-    text("Click Here", 534, 754);
-    text("to See Result!", 534, 774);
+    text("Click for", 534, 754);
+    text("Result!", 534, 774);
   }
   
   if(compare){
@@ -455,9 +456,9 @@ async function gameRunning() {
 
     console.log("Blue = " + cards_1[index1].name.charAt(0) + cards_1[index1].name.charAt(1));
     console.log("Red = " + cards_2[index1].name.charAt(0) + cards_2[index1].name.charAt(1));
-    //await sleep(delayTime);
+    
     if((char2 < char1) && (!warCondition)){
-      // delayTime(1);
+      
       if (warCardsPile) {
         for (let i=index_hidden; i<=index_hidden + numberOfCardsInPile; ++i) {
           cards_1[i].moveTo(width/3- card_width/2, height - card_height - 10);
@@ -469,7 +470,7 @@ async function gameRunning() {
         cards_2[index2].moveTo(width/3- card_width/2, height - card_height - 10);
       }
     }else if((char1 < char2) && (!warCondition)){
-      // delayTime(1);
+      
       if (warCardsPile) {
         for (let i=index_hidden; i<=index_hidden + numberOfCardsInPile; ++i) {
           cards_1[i].moveTo((2*width)/3- card_width/2, 10);
@@ -480,7 +481,7 @@ async function gameRunning() {
         cards_2[index2].moveTo((2*width)/3- card_width/2,10);
       }
     }else if((char1 == char2) && (!warCondition)){
-      // delayTime(1);
+      
       compare = false;
       console.log("WAR!");
       warCondition = true;
@@ -515,6 +516,7 @@ function updateScore(){
 function endGame() {
 
   background(endBackground);
+  speedSlider.hide();
   replayButton.show();
   replayButton.position(340, height/2.08);
   replayButton.size(150,30);
@@ -547,14 +549,6 @@ function endGame() {
 }
 
 function mousePressed(){
-  // Check the screen state
-  // If screen state == 0 then start game
-  // If screen state == 3(transition state) then end game
-  // transition state is triggered when the cards array length == index length in gameRunning()
-  // if(screen_state == 5) {
-  //   screen_state = 3;
-  // }
-  
   back1.clicked();
 }
 
@@ -567,23 +561,6 @@ function preload(){
   scoreFont = loadFont('assets/fonts/PermanentMarker-Regular.ttf');
   coolFont = loadFont('assets/fonts/CreteRound-Regular.ttf');
 }
-
-// const sleep = (millis) => { 
-//     return new Promise(resolve => setTimeout(resolve, millis)) 
-// }
-// function getRandomInt(min, max) {
-//     min = Math.ceil(min)
-//     max = Math.floor(max)
-//     return Math.floor(Math.random() * (max - min) + min)
-// }
-// async function draw() {
-//     let time = frameCount * 20
-//     let value2 = getRandomInt(100,500)
-//     line( time - 20, value1, time, value2 )
-//     value1 = value2
-//     await sleep(100)
-//     if (time < 1200) { redraw() } else { myProgram() }
-// }
 
 function resetGame(){
 
