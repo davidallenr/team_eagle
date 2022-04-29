@@ -13,6 +13,7 @@ let compare = false;
 let move = false;
 let player1_score = 0;   // Player score variable
 let player2_score = 0;
+let warLogo;
 let backgroundLogo;
 let endBackground;
 let startBackground;
@@ -189,8 +190,6 @@ class Card{
 function setup() {
   // put setup code here 
   createCanvas(800,800);
-  background(225);
-  logo = loadImage('assets/UI/logo.png');
 
   myInput = createInput('');
   myInput.position(290, 397);
@@ -377,6 +376,8 @@ function gameRunning() {
 
   if (warCondition) {
     background(warBackground);
+    image(warLogo, 200, 50);
+    warLogo.resize(400,400);
   } else {
     background(backgroundLogo);
   }
@@ -453,9 +454,6 @@ function gameRunning() {
   if(compare){
     char1 = cards_1[index1].name.charAt(0)+cards_1[index1].name.charAt(1);
     char2 = cards_2[index2].name.charAt(0)+cards_2[index2].name.charAt(1);
-
-    console.log("Blue = " + cards_1[index1].name.charAt(0) + cards_1[index1].name.charAt(1));
-    console.log("Red = " + cards_2[index1].name.charAt(0) + cards_2[index1].name.charAt(1));
     
     if((char2 < char1) && (!warCondition)){
       
@@ -483,7 +481,6 @@ function gameRunning() {
     }else if((char1 == char2) && (!warCondition)){
       
       compare = false;
-      console.log("WAR!");
       warCondition = true;
       index_hidden = index1;
       global_control = true;
@@ -492,7 +489,6 @@ function gameRunning() {
       global_control = true;
     }
 
-    console.log("out of loop 1")
   }
 
   // Screen State check for game over condition
@@ -553,6 +549,8 @@ function mousePressed(){
 }
 
 function preload(){
+  logo = loadImage('assets/UI/logo.png');
+  warLogo = loadImage('assets/UI/warLogo.png');
   startBackground = loadImage('assets/UI/startBackground.jpg');
   backgroundLogo = loadImage('assets/UI/cardBackground.jpg');
   endBackground = loadImage('assets/UI/endBackground.jpg');
