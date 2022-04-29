@@ -31,6 +31,10 @@ let rulesButton;
 let index_hidden = -1;
 let warCondition = false;
 let warCardsPile = false;
+let clickToSeeResult = false;
+let warCounter = 0;
+let numberOfCardsInPile = 0;
+let doubleWar = false;
 
 // Screen state is how we can transition between title-game-gameover screens etc.
 // 0 = StarScreen
@@ -115,6 +119,20 @@ class Card{
           warCondition = false;
           warCardsPile = true;
         }
+        if (index1 == 25) {
+          clickToSeeResult = true;
+        }
+
+        if (warCondition) {
+          warCounter += parseInt(char1) + parseInt(char2);
+        }
+        if (doubleWar) {
+          numberOfCardsInPile += 4;
+          doubleWar = false;
+        }
+        if (!warCondition) {
+          numberOfCardsInPile = 4;
+        }
       }
     }
   }
@@ -146,9 +164,14 @@ class Card{
       // TODO: screen width needs to be set as a variable and same with height.
       //if (this.x < 800/2) {
       //}
-      updateScore.call(); // Increase player score
+      if (!warCondition) {
+        updateScore.call(); // Increase player score
+      }
       warCardsPile = false;
       index_hidden = -1;
+      if (warCondition && warCardsPile) {
+        doubleWar = true;
+      }
     }
 
   }
@@ -219,9 +242,9 @@ function setup() {
     let imgFaceDown = loadImage('assets/cards/back_of_card_blue.png');
     cards_1[i] = new Card((2*width)/3 - card_width/2, height - card_height - 10 , imgFaceUp, imgFaceDown, names[i]);
 
-    imgFaceUp = loadImage('assets/cards/'+names[i+25]);
+    imgFaceUp = loadImage('assets/cards/'+names[i+26]);
     imgFaceDown = loadImage('assets/cards/back_of_card.png');
-    cards_2[i] = new Card(width/3 - card_width/2, 10 , imgFaceUp, imgFaceDown, names[i+25]);
+    cards_2[i] = new Card(width/3 - card_width/2, 10 , imgFaceUp, imgFaceDown, names[i+26]);
     i++;
   }
 
@@ -320,8 +343,8 @@ function displayRules(){
   text("point. If the face up card is again the same rank, then the war goes on, three", 400, 490);
   text("more face down, one face up etc.", 400, 520);
   text("4. The player with the highest score at the end wins.", 400, 550);
-  text("5. If a player finishes their cards during a war without having enough cards to", 400, 580);
-  text("finish the war then he loses immediately.", 400, 610);
+  text("5. If the players finish their cards during a war without having enough cards to", 400, 580);
+  text("finish the war then they Draw the game.", 400, 610);
   text("That's all there is to it. Just a lot of clicking on cards and hoping for the best! Enjoy :)", 400, 660);
 
 }
@@ -388,9 +411,10 @@ async function gameRunning() {
     cards_1[index1].move();
     cards_2[index2].move();
   }
-
-  back1.showFaceDown();
-  back2.showFaceDown();
+  if (index1 < 25) {
+    back1.showFaceDown();
+    back2.showFaceDown();
+  }
 
   // Draw the player score to screen
   // TODO: Style the text appropriately
@@ -403,26 +427,39 @@ async function gameRunning() {
     text(myText + ": " + player1_score, 80, 780);
   }
   text("Computer: " + player2_score, 700, 80);
-  fill(193,248,207);
-  rect(600, 680, 180, 50, 10, 10, 10, 10);
-  describe('white rect with black outline');
   textSize(16);
-  fill(40,40,40);
   textFont(coolFont);
-  text("Click on your top card", 690, 700);
-  text("to play it", 690, 720);
+  if (index1 < 25) {
+    textSize(16);
+    textFont(coolFont);
+    fill(193,248,207);
+    rect(600, 680, 180, 50, 10, 10, 10, 10);
+    fill(40,40,40);
+    text("Click on your top card", 690, 700);
+    text("to play it", 690, 720);
+  }
+
+  if (clickToSeeResult) {
+    textSize(16);
+    textFont(coolFont);
+    fill(255,127,127);
+    rect(484, 730, 100, 60, 10, 10, 10, 10);
+    fill(40,40,40);
+    text("Click Here", 534, 754);
+    text("to See Result!", 534, 774);
+  }
   
   if(compare){
     char1 = cards_1[index1].name.charAt(0)+cards_1[index1].name.charAt(1);
     char2 = cards_2[index2].name.charAt(0)+cards_2[index2].name.charAt(1);
+
+    console.log("Blue = " + cards_1[index1].name.charAt(0) + cards_1[index1].name.charAt(1));
+    console.log("Red = " + cards_2[index1].name.charAt(0) + cards_2[index1].name.charAt(1));
     //await sleep(delayTime);
     if((char2 < char1) && (!warCondition)){
       // delayTime(1);
-      console.log("char1 = " + char1 + ", char2 = " + char2);
       if (warCardsPile) {
-        for (let i=index_hidden; i<=index_hidden + 4; ++i) {
-          console.log("inside loop with " + char1 + " > " + char2 + " index_hidden = " + index_hidden);
-          console.log("inside loop i = " + i);
+        for (let i=index_hidden; i<=index_hidden + numberOfCardsInPile; ++i) {
           cards_1[i].moveTo(width/3- card_width/2, height - card_height - 10);
           cards_2[i].moveTo(width/3- card_width/2, height - card_height - 10);
         }
@@ -433,11 +470,8 @@ async function gameRunning() {
       }
     }else if((char1 < char2) && (!warCondition)){
       // delayTime(1);
-      console.log("char1 = " + char1 + ", char2 = " + char2);
       if (warCardsPile) {
-        for (let i=index_hidden; i<=index_hidden + 4; ++i) {
-          console.log("inside loop with " + char1 + " < " + char2 + " index_hidden = " + index_hidden);
-          console.log("inside loop i = " + i);
+        for (let i=index_hidden; i<=index_hidden + numberOfCardsInPile; ++i) {
           cards_1[i].moveTo((2*width)/3- card_width/2, 10);
           cards_2[i].moveTo((2*width)/3- card_width/2,10);
         }
@@ -460,20 +494,20 @@ async function gameRunning() {
     console.log("out of loop 1")
   }
 
-  console.log("out of loop 2")
   // Screen State check for game over condition
   // if the length of the cards array is equal to index set state to 3
-  if (cards_1.length == index1) {
-    screen_state = 5;
+  if (index1 == 26) {
+    screen_state = 3;
   }
 }
 
 function updateScore(){
   if (char1 > char2){
-    player1_score += parseInt(char1) + parseInt(char2);
+    player1_score += parseInt(char1) + parseInt(char2) + warCounter;
   } else if (char1 < char2){
-    player2_score += parseInt(char1) + parseInt(char2);
+    player2_score += parseInt(char1) + parseInt(char2) + warCounter;
   }
+  warCounter = 0;
 }
 
 // End game is when the screen state == 2
@@ -494,6 +528,12 @@ function endGame() {
   if (myText == '') {
     myText = 'Human'
   }
+  if (warCondition) {
+    text("Draw!", 800/1.8 - 45, 800/2.6-10);
+    textSize(20);
+    text("Not enough cards", 800/1.8 - 45, 800/2.6 + 20);
+    text("to finish the WAR!", 800/1.8 - 45, 800/2.6 + 40);
+  } else {
   if (player1_score > player2_score) {
     text("You WON, " + myText + "!", 800/1.8 - 45, 800/2.6 - 10);
     text("Great Job!", 800/1.8 - 45, 800/2.6 + 30);
@@ -503,6 +543,7 @@ function endGame() {
   } else {
     text("Draw!", 800/1.8 - 45, 800/2.6);
     }
+  }
 }
 
 function mousePressed(){
@@ -510,9 +551,9 @@ function mousePressed(){
   // If screen state == 0 then start game
   // If screen state == 3(transition state) then end game
   // transition state is triggered when the cards array length == index length in gameRunning()
-  if(screen_state == 5) {
-    screen_state = 3;
-  }
+  // if(screen_state == 5) {
+  //   screen_state = 3;
+  // }
   
   back1.clicked();
 }
@@ -564,6 +605,7 @@ function resetGame(){
   warCondition = false;
   warCardsPile = false;
   index_hidden = -1;
+  clickToSeeResult = false;
   randomize(names,names.length);
   setup();
   draw();
