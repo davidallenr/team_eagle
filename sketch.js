@@ -28,6 +28,7 @@ let myText = '';
 let playButton;
 let replayButton;
 let rulesButton;
+let aboutButton;
 let index_hidden = -1;
 let warCondition = false;
 let warCardsPile = false;
@@ -120,9 +121,6 @@ class Card{
           warCondition = false;
           warCardsPile = true;
         }
-        if (index1 == 25) {
-          clickToSeeResult = true;
-        }
 
         if (warCondition) {
           warCounter += parseInt(char1) + parseInt(char2);
@@ -168,8 +166,13 @@ class Card{
       }
       warCardsPile = false;
       index_hidden = -1;
+
       if (warCondition && warCardsPile) {
         doubleWar = true;
+      }
+
+      if (index1 == 25) {
+        clickToSeeResult = true;
       }
     }
 
@@ -226,6 +229,12 @@ function setup() {
   rulesButton.mousePressed(rulesButtonClicked);
   rulesButton.hide();
 
+  aboutButton = createButton('About');
+  aboutButton.position(width/2.3, height/1.64);
+  aboutButton.size(100,30);
+  aboutButton.mousePressed(aboutButtonClicked);
+  aboutButton.hide();
+
   speedSlider = createSlider(1,15,7);
   speedSlider.size(100);
   speedSlider.hide();
@@ -266,6 +275,8 @@ function draw() {
     endGame();
   } else if (screen_state == 4) {
     displayRules();
+  } else if (screen_state == 5) {
+    displayAbout();
   }
 
 }
@@ -294,6 +305,7 @@ function playButtonClicked(){
   screen_state = 1;
   playButton.hide();
   rulesButton.hide();
+  aboutButton.hide();
 }
 
 function replayButtonClicked(){
@@ -307,6 +319,14 @@ function rulesButtonClicked(){
   screen_state = 4;
   rulesButton.hide();
   playButton.hide();
+  aboutButton.hide();
+}
+
+function aboutButtonClicked() {
+  screen_state = 5;
+  playButton.hide();
+  rulesButton.hide();
+  aboutButton.hide();
 }
 
 function displayRules(){
@@ -340,11 +360,39 @@ function displayRules(){
 
 }
 
+function displayAbout() {
+  background(rulesBackground);
+  backButton.show();
+  fill(165,42,42);
+  textAlign(CENTER);
+  textSize(40);
+  textFont(coolFont);
+  text("Welcome to War!", 400, 80);
+  //textAlign(RIGHT);
+  textSize(17);
+  fill(0,0,0);
+  text("Class: CS33901 Software Engineering", 400, 130);
+  text("Professor: Dr. Gregory DeLozier", 400, 160);
+  text("Developers: David Russell, Yassine Lamtalaa, Nicholas Davis, Andrew Vanas,", 400, 190);
+  text("Riley Myers, Mohamed Rissal Hedna", 400, 220);
+  text("With less than 12 weeks to learn a completely new technology stack and learn the scrum", 400, 270);
+  text("routine, our group developed the idea of creating an online war card game using p5js.", 400, 300);
+  text("The idea of creating an online version of the famous 'War' card game came about when", 400, 330);
+  text("we were told to make a simple game that was fun and interactive. Our group voted", 400, 360);
+  text("on a couple of ideas but ultimately War won the poll.", 400, 390);
+  text("At the beginning of the spring '22 semester at Kent State University, we were told that", 400, 440);
+  text("we needed a complete product to show off in front of real software engineers by the end", 400, 470);
+  text("of the semester. After countless hours between the six of us developers, we are excited", 400, 500);
+  text("to present our final product. This project has been an amazing experience for all of us", 400, 530);
+  text("and it has made us excited to become future software engineers in the real world!", 400, 560);
+}
+
 // Start screen is when screen state == 0
 function startScreen() {
   background(startBackground);
   playButton.show();
   rulesButton.show();
+  aboutButton.show();
   image(logo, 150, 50); // Title Screen Logo Image
   fill(100,100,255);
   textAlign(CENTER);
@@ -441,16 +489,6 @@ function gameRunning() {
     text("to play it", 690, 720);
   }
 
-  if (clickToSeeResult) {
-    textSize(16);
-    textFont(coolFont);
-    fill(255,127,127);
-    rect(484, 730, 100, 60, 10, 10, 10, 10);
-    fill(40,40,40);
-    text("Click for", 534, 754);
-    text("Result!", 534, 774);
-  }
-  
   if(compare){
     char1 = cards_1[index1].name.charAt(0)+cards_1[index1].name.charAt(1);
     char2 = cards_2[index2].name.charAt(0)+cards_2[index2].name.charAt(1);
@@ -490,7 +528,17 @@ function gameRunning() {
     }
 
   }
-
+  
+  if (clickToSeeResult) {
+    textSize(16);
+    textFont(coolFont);
+    fill(255,127,127);
+    rect(484, 730, 100, 60, 10, 10, 10, 10);
+    fill(40,40,40);
+    text("Click for", 534, 754);
+    text("Result!", 534, 774);
+  }
+  
   // Screen State check for game over condition
   // if the length of the cards array is equal to index set state to 3
   if (index1 == 26) {
